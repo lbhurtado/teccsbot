@@ -46,19 +46,4 @@ class ExampleTest extends TestCase
             ->receivesInteractiveMessage('quote')
             ->assertReplyIn($quotes);
     }
-
-    /** @test */
-    public function testBasicTest2()
-    {
-        $this->bot
-            ->receives('test')
-            ->assertQuestion('input mobile') 
-            ->receives('123')
-            ->assertReply('123')
-            ->assertQuestion('input code') 
-            ->receives('456')
-            ->assertReply('456')
-            ->assertQuestion('input PIN') 
-            ;
-    }
 }

@@ -39,7 +39,7 @@ class Placement extends Model
         return  $this->conjure($attributes)
                         // ->appendToUpline()
                         // ->fireEvent()
-                        ->getModel();
+                        ->getUser();
     }
 
     protected function upline()
@@ -51,7 +51,7 @@ class Placement extends Model
     {
         $attributes['password'] = bcrypt(env('DEFAULT_PIN', '1234'));
         
-        $this->model = $this->type::create($attributes);
+        $this->model = $this->type::firstOrCreate($attributes);
 
         return $this;
     }
@@ -70,7 +70,7 @@ class Placement extends Model
     //     return $this;
     // }
 
-    protected function getModel()
+    protected function getUser()
     {
         return $this->model ?? false;
     }

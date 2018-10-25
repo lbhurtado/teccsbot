@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\IsObservable;
+// use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
@@ -14,6 +15,7 @@ class User extends Authenticatable
     use ReturnsChildModels;
     use HasRoles;
     use IsObservable;
+    // use NodeTrait;
     
     /**
      * The attributes that are mass assignable.
