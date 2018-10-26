@@ -60,7 +60,7 @@ class Tag
     	return $this->attributes;
     }
 
-    protected function getClass($type)
+    public function getClass($type)
     {
 		if (in_array($type, array_keys(self::$classes)))
     		return self::$classes[$type];

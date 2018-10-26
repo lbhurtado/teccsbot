@@ -26,6 +26,9 @@ class User extends Authenticatable
         'name', 'email', 'password', 'mobile'
     ];
 
+    protected $dates = [
+        'created_at', 'updated_at', 'verified_at'
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -63,4 +66,9 @@ class User extends Authenticatable
 
         if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
     }   
+
+    public function messengers()
+    {
+        return $this->hasMany(Messenger::class);
+    }
 }
