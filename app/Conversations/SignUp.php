@@ -13,6 +13,8 @@ class SignUp extends Conversation
 {
     protected $messenger;
 
+    protected $name;
+
     protected $mobile;
 
     protected $user;
@@ -21,10 +23,24 @@ class SignUp extends Conversation
 
     public function run()
     {
-        $this->touch()->askMobileNumberOfUser();
+        $this->touch()->askForNameOfUser();
     }
 
-    protected function askMobileNumberOfUser()
+    protected function askForNameOfUser()
+    {
+        $question = Question::create("Please enter your name.")
+            ->fallback('Unable to input name.')
+            ->callbackId('input_name')
+            ;
+
+        return $this->ask($question, function (Answer $answer) {
+            $this->name = $answer->getText();
+
+            return $this->askForMobileNumberOfUser();
+        });
+    }
+
+    protected function askForMobileNumberOfUser()
     {
         $question = Question::create("Please enter mobile number.")
             ->fallback('Unable to input mobile.')
@@ -49,12 +65,12 @@ class SignUp extends Conversation
             }
         	else {
 
-                return $this->askCodeGivenToUser(); 
+                return $this->askForCodeGivenToUser(); 
             }
         });
     }
 
-    protected function askCodeGivenToUser()
+    protected function askForCodeGivenToUser()
     {
         $question = Question::create("Please enter your code.")
             ->fallback('Unable to input code.')
@@ -108,9 +124,17 @@ class SignUp extends Conversation
         return $this;
     }
 
+    private function getUserAttributes()
+    {
+        return [
+            'mobile' => $this->mobile,
+            'name' => $this->name,
+        ];
+    }
+
     private function getMobileAttribute()
     {
-        return ['mobile' =>  $this->mobile];
+        return array_only($this->getUserAttributes(), 'mobile');
     }
 
     private function getUser()
@@ -136,7 +160,7 @@ class SignUp extends Conversation
     private function activateUserIfCodeIsValid($code)
     {
         optional(Placement::bearing($code)->first(), function($placement) {
-            $this->user = $placement->wake($this->getMobileAttribute());
+            $this->user = $placement->wake($this->getUserAttributes());
             $this->message = $placement->message;
         });
 

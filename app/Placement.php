@@ -17,6 +17,7 @@ class Placement extends Model
 		'message',
 	];
 
+    // cannot use $user
     protected $model;
 
     public static function record($attributes, $user = null)
@@ -37,7 +38,7 @@ class Placement extends Model
     public function wake($attributes)
     {
         return  $this->conjure($attributes)
-                        // ->appendToUpline()
+                        ->appendToUpline()
                         // ->fireEvent()
                         ->getUser();
     }
@@ -58,7 +59,7 @@ class Placement extends Model
 
     protected function appendToUpline()
     {
-        $this->upline()->appendNode($this->model);
+        $this->upline()->appendNode($this->getUser());
 
         return $this;
     }
@@ -80,8 +81,13 @@ class Placement extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtolower($value);
+    }
+
     public function scopeBearing($query, $code)
     {
-        return $query->where('code', $code);
+        return $query->where('code', strtolower($code));
     }
 }

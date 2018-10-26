@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Traits\IsObservable;
-// use Kalnoy\Nestedset\NodeTrait;
+use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
@@ -15,7 +15,7 @@ class User extends Authenticatable
     use ReturnsChildModels;
     use HasRoles;
     use IsObservable;
-    // use NodeTrait;
+    use NodeTrait;
     
     /**
      * The attributes that are mass assignable.
@@ -67,8 +67,23 @@ class User extends Authenticatable
         if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
     }   
 
+    public function setMobileAttribute($value)
+    {
+        $this->attributes['mobile'] = Phone::number($value);
+    }
+
+    public function getNameAttribute($value)
+    {
+        return $value ? ucfirst($value) : $this->mobile;
+    }
+
     public function messengers()
     {
         return $this->hasMany(Messenger::class);
+    }
+
+    public function scopeWithMobile($query, $value)
+    {
+        return $query->where('mobile', Phone::number($value));
     }
 }

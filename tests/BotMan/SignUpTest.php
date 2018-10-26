@@ -16,6 +16,11 @@ class SignUpTest extends TestCase
 
     protected $admin;
 
+    protected $phone_numbers = [
+        '09181111111',
+        '09182222222',
+        '09183333333',
+    ];
     // protected $user;
 
     function setUp()
@@ -26,7 +31,7 @@ class SignUpTest extends TestCase
 
         $this->faker = $this->makeFaker('en_PH');
 
-        $this->admin = factory(\App\Admin::class)->create();
+        $this->admin = factory(\App\Admin::class)->create(['name' => 'Admin']);
 
         foreach(Tag::$classes as $key => $values) {
             $code = $key;
@@ -44,21 +49,24 @@ class SignUpTest extends TestCase
     {
         \Queue::fake();
 
-        $mobile = '+639181111111';
-        $type = 'operator';
+        $name = $this->faker->name;
+        $number = '09181111111';
+        $type = 'Operator';
 
         $this->bot
             ->setUser(['id' => 111111])
             ->setDriver(TelegramDriver::class)
             ->receives('signup')
+            ->assertQuestion('Please enter your name.') 
+            ->receives($name)            
             ->assertQuestion('Please enter mobile number.') 
-            ->receives($mobile)
+            ->receives($number)
             ->assertQuestion('Please enter your code.')
             ->receives($type)
             ->assertQuestion('Please enter your PIN.')
             ;
 
-        $user = User::where(compact('mobile'))->first();
+        $user = User::withMobile($number)->first();
         $user->forceFill(['verified_at' => date("Y-m-d H:i:s")])->save();
         $placement = Placement::bearing($type)->first();
 
@@ -69,11 +77,27 @@ class SignUpTest extends TestCase
 
         \Queue::assertPushed(\App\Jobs\RequestOTP::class);
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
+
+        $nodes = User::get()->toTree();
+
+        $traverse = function ($categories, $prefix = '-') use (&$traverse) {
+            foreach ($categories as $category) {
+                echo PHP_EOL.$prefix.' '.$category->name.' ('.$category->mobile.')';
+
+                $traverse($category->children, $prefix.'-');
+            }
+        };
+
+        $traverse($nodes);
+        echo PHP_EOL.' ';
+        echo PHP_EOL.' ';
+
     }
 
     /** @test */
     public function signup_inputs_mobile_old_verified_user()
     {
+        $name = $this->faker->name;
         $mobile = '09182222222';
         $user = factory(\App\Operator::class)->create(compact('mobile'));
 
@@ -83,6 +107,8 @@ class SignUpTest extends TestCase
             ->setUser(['id' => 222222])
             ->setDriver(TelegramDriver::class)
             ->receives('signup')
+            ->assertQuestion('Please enter your name.') 
+            ->receives($name) 
             ->assertQuestion('Please enter mobile number.') 
             ->receives($mobile)
             ->assertReply('You are still valid.')
@@ -92,6 +118,7 @@ class SignUpTest extends TestCase
     /** @test */
     public function signup_inputs_mobile_old_verification_stale_user()
     {
+        $name = $this->faker->name;
         $mobile = '09183333333';
         $user = factory(\App\Operator::class)->create(compact('mobile'));
 
@@ -103,6 +130,8 @@ class SignUpTest extends TestCase
             ->setUser(['id' => 333333])
             ->setDriver(TelegramDriver::class)
             ->receives('signup')
+            ->assertQuestion('Please enter your name.') 
+            ->receives($name) 
             ->assertQuestion('Please enter mobile number.') 
             ->receives($mobile)
             ->assertQuestion('Please enter your PIN.')

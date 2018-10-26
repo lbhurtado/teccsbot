@@ -7,11 +7,6 @@ use App\Events\UserWasRecorded;
 
 class UserObserver
 {
-    public function creating(User $user)
-    {
-        $user->mobile = Phone::number($user->mobile);
-    }
-
     /**
      * Handle the user "created" event.
      *
