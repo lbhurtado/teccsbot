@@ -30,9 +30,10 @@ class RequestOTP implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     */
+     // */
     public function handle()
     {
         $this->user->notify(new PhoneVerification('sms', true));
+        // $this->user->notify(new PhoneVerification('sms', true, 't.me/grassroots_bot?verify='.$this->user->mobile));
     }
 }

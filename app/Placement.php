@@ -39,7 +39,7 @@ class Placement extends Model
     {
         return  $this->conjure($attributes)
                         ->appendToUpline()
-                        // ->fireEvent()
+                        ->logAsynchronously()
                         ->getUser();
     }
 
@@ -64,12 +64,12 @@ class Placement extends Model
         return $this;
     }
 
-    // protected function fireEvent()
-    // {
-    //     event(new PlacementWasRecorded($this->getModel(), $this));
+    protected function logAsynchronously()
+    {
+        // event(new PlacementWasRecorded($this->getModel(), $this));
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     protected function getUser()
     {

@@ -85,11 +85,11 @@ class PhoneVerification extends Notification
         }
 
         if ($this->action) {
-            $message->action($action);
+            $message->action($this->action);
         }
 
         if ($this->actionMessage) {
-            $message->actionMessage($actionMessage);
+            $message->actionMessage($this->actionMessage);
         }
 
         return $message;

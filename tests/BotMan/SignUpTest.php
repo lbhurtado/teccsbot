@@ -3,12 +3,13 @@
 namespace Tests\BotMan;
 
 use Tests\TestCase;
+use App\{Admin, Tag, Placement, User};
+use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\BotMan\Messages\Outgoing\{Question, OutgoingMessage};
-use App\{Admin, Tag, Placement, User};
-use Carbon\Carbon;
+
+
 
 class SignUpTest extends TestCase
 {
@@ -33,7 +34,7 @@ class SignUpTest extends TestCase
 
         $this->admin = factory(\App\Admin::class)->create(['name' => 'Admin']);
 
-        foreach(Tag::$classes as $key => $values) {
+        foreach(User::$classes as $key => $values) {
             $code = $key;
             $type = $values;
             $message = env('BOT_REGISTRATION_MESSAGE_'.strtoupper($key), 'You are now a registered '.strtolower($key).'.');
@@ -45,7 +46,7 @@ class SignUpTest extends TestCase
     }
 
     /** @test */
-    public function signup_inputs_mobile_code_pin_new_user()
+    public function signup_inputs_name_mobile_code_pin_new_user()
     {
         \Queue::fake();
 
@@ -91,11 +92,10 @@ class SignUpTest extends TestCase
         $traverse($nodes);
         echo PHP_EOL.' ';
         echo PHP_EOL.' ';
-
     }
 
     /** @test */
-    public function signup_inputs_mobile_old_verified_user()
+    public function signup_inputs_name_mobile_old_verified_user()
     {
         $name = $this->faker->name;
         $mobile = '09182222222';
@@ -116,7 +116,7 @@ class SignUpTest extends TestCase
     }
 
     /** @test */
-    public function signup_inputs_mobile_old_verification_stale_user()
+    public function signup_inputs_name_mobile_old_verification_stale_user()
     {
         $name = $this->faker->name;
         $mobile = '09183333333';

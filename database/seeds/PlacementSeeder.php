@@ -1,6 +1,6 @@
 <?php
 
-use App\{Admin, Tag, Placement};
+use App\{User, Admin, Placement};
 use Illuminate\Database\Seeder;
 
 class PlacementSeeder extends Seeder
@@ -16,7 +16,7 @@ class PlacementSeeder extends Seeder
 
         $admin = Admin::first();
 
-        foreach(Tag::$classes as $key => $values) {
+        foreach(User::$classes as $key => $values) {
 			$code = $key;
 			$type = $values;
             $message = env('BOT_REGISTRATION_MESSAGE_'.strtoupper($key), 'You are now a registered '.strtolower($key).'.');

@@ -10,14 +10,6 @@ class UserTest extends TestCase
 {
 	use RefreshDatabase, WithFaker;
 
-	protected $classes = [	
-		\App\Admin::class,
-		\App\Operator::class,
-		\App\Staff::class,
-		\App\Subscriber::class,
-		\App\Worker::class,
-	];
-
     function setUp()
     {
         parent::setUp();
@@ -37,7 +29,7 @@ class UserTest extends TestCase
     	// $admin = \App\Admin::create(compact('mobile', 'password'));
 
     	// dd($admin);
-    	foreach ($this->classes as $class) {
+    	foreach (\App\User::$classes as $class) {
 		    $descendant = factory($class)->create();
 	  		$user = \App\User::find($descendant->id);
 

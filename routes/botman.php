@@ -1,9 +1,11 @@
 <?php
 
 use BotMan\BotMan\BotMan;
+
+use App\Controllers\UserController;
 use App\Http\Controllers\BotManController;
 use App\Http\Conversations\TestConversation;
-use App\Conversations\SignUp;
+use App\Conversations\{SignUp, Verify};
 use App\Http\Middleware\ManagesUsersMiddleware;
 
 $botman = resolve('botman');
@@ -28,4 +30,10 @@ $botman->hears('stop|/stop|\s', function(BotMan $bot) {
 
 $botman->hears('signup', function (BotMan $bot) {
     $bot->startConversation(new SignUp());
+})->stopsConversation();
+
+$botman->hears('register {attributes}', UserController::class.'@register');
+
+$botman->hears('verify', function (BotMan $bot) {
+    $bot->startConversation(new Verify());
 })->stopsConversation();

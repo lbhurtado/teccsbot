@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Jobs\RequestOTP;
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
@@ -17,11 +18,14 @@ class User extends Authenticatable
     use IsObservable;
     use NodeTrait;
     
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    public static $classes = [
+        'admin'      => Admin::class,
+        'operator'   => Operator::class,
+        'staff'      => Staff::class,
+        'subscriber' => Subscriber::class,
+        'worker'     => Worker::class,
+    ];
+
     protected $fillable = [
         'name', 'email', 'password', 'mobile'
     ];
@@ -29,11 +33,7 @@ class User extends Authenticatable
     protected $dates = [
         'created_at', 'updated_at', 'verified_at'
     ];
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+
     protected $hidden = [
         'password', 'remember_token',
     ];
@@ -48,6 +48,11 @@ class User extends Authenticatable
     public function routeNotificationForAuthy()
     {
         return $this->authy_id;
+    }
+
+    public function verify()
+    {
+        RequestOTP::dispatch($this);
     }
 
     public function isVerified()

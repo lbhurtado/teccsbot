@@ -48,25 +48,16 @@ class SignUp extends Conversation
             ;
 
         return $this->ask($question, function (Answer $answer) {
-
             if ($this->isNotAValidMobileNumber($answer->getText())) 
                 return $this->repeat("Please enter mobile number. STOP or <space> to stop.");
-            
-            
-            if ($this->userAlreadyExistsAsPerMobile()) {
-                if ($this->getUser()->isVerificationStale()) {
-
+            elseif ($this->userAlreadyExistsAsPerMobile()) {
+                if ($this->getUser()->isVerificationStale())
                     return $this->challengeUser();
-                }
-                else {
-
+                else
                     return $this->bot->reply('You are still valid.');
-                }
             }
-        	else {
-
+        	else
                 return $this->askForCodeGivenToUser(); 
-            }
         });
     }
 
