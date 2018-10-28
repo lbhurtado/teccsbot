@@ -72,6 +72,19 @@ class User extends Authenticatable
         if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
     }   
 
+    public function generatePlacements()
+    {
+        $this->placements()->delete();
+
+        foreach(User::$classes as $key => $values) {
+            $code = Dictionary::generate(1,2,3);
+            $type = $values;
+            $message = 'Registered '.strtolower($key).' by '.$this->name;
+            
+            Placement::record(compact('code', 'type', 'message'), $this);   
+        }
+    }
+
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = Phone::number($value);
@@ -87,8 +100,18 @@ class User extends Authenticatable
         return $this->hasMany(Messenger::class);
     }
 
+    public function placements()
+    {
+        return $this->hasMany(Placement::class);
+    }
+
     public function scopeWithMobile($query, $value)
     {
         return $query->where('mobile', Phone::number($value));
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereNotNull('verified_at')->where('verified_at', '<=', now());
     }
 }

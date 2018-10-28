@@ -10,11 +10,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UserWasRecorded
+class UserEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    protected $user;
 
     /**
      * Create a new event instance.
@@ -33,6 +33,11 @@ class UserWasRecorded
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.recorded');
+        return new PrivateChannel('user-event');
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }

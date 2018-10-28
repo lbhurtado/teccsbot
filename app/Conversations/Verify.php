@@ -66,6 +66,8 @@ class Verify extends Conversation
             return $this->inputPIN($user);
         }
 
+        $user->generatePlacements();
+        
         $this->bot->reply('Yehey!');
     }
 }

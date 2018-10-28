@@ -43,13 +43,20 @@ class RegisterTest extends TestCase
         $name = $this->faker->name;
         $number = '09178251991';
         $code = 'Operator';
-
+        $driver = TelegramDriver::DRIVER_NAME;
+        $channel_id = '111111';
+        
         $this->bot
-            ->setUser(['id' => 111111])
+            ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives("register $code $number")
             ->assertReply("OTP sent.") 
             ;
+
+        $this->assertDatabaseHas('messengers', [
+            'driver' => $driver,
+            'channel_id' => $channel_id,
+        ]);
 
         \Queue::assertPushed(\App\Jobs\RequestOTP::class);
     }

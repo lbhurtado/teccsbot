@@ -37,3 +37,7 @@ $botman->hears('register {attributes}', UserController::class.'@register');
 $botman->hears('verify', function (BotMan $bot) {
     $bot->startConversation(new Verify());
 })->stopsConversation();
+
+$botman->hears('placement', UserController::class.'@placement');
+
+$botman->hears('broadcast {message}', UserController::class.'@broadcast');

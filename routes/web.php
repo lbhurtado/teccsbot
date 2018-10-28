@@ -12,6 +12,7 @@
 */
 
 use App\Placement;
+use App\Events\UserWasRecorded;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,11 +23,15 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 Route::get('/test', function () {
 
-    $user = \App\Operator::find(4);
-    // dd($user);
+    $user = \App\Operator::create(['mobile' => '09189262340', 'password' => bcrypt('1234')]);
+
+    dd($user);
+
+    // event(new UserWasRecorded($user));
+    // $user->generatePlacements();
         // event(new UserWasFlagged($user));
         // \App\Jobs\RequestOTP::dispatch($user);
-    \App\Jobs\VerifyOTP::dispatch($user, '182112');
+    // \App\Jobs\VerifyOTP::dispatch($user, '182112');
 
 
     // $user->notify(new PhoneVerification('sms', true));

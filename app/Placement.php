@@ -90,4 +90,9 @@ class Placement extends Model
     {
         return $query->where('code', strtolower($code));
     }
+
+    public function scopeBy($query, $user)
+    {
+        return $query->where('user_id', $user->id);
+    }    
 }

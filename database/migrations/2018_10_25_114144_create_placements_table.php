@@ -22,7 +22,7 @@ class CreatePlacementsTable extends Migration
             $table->text('message')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['user_id', 'type']);
+            // $table->unique(['user_id', 'type']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

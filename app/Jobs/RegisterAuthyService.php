@@ -12,7 +12,7 @@ class RegisterAuthyService implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-   protected $proto;
+    protected $proto;
 
     public $user;
 

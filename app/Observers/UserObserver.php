@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
-use App\{User, Phone};
-use App\Events\UserWasRecorded;
+use App\User;
+use App\Events\UserEvent;
+use App\Events\User\UserEvents;
+
 
 class UserObserver
 {
@@ -15,13 +17,13 @@ class UserObserver
      */
     public function created(User $user)
     {
-        event(new UserWasRecorded($user));
+        event(UserEvents::CREATED, new UserEvent($user));
     }
 
     /**
      * Handle the user "updated" event.
      *
-     * @param  \App\=App\User  $user
+     * @param  \App\User  $user
      * @return void
      */
     public function updated(User $user)
@@ -32,7 +34,7 @@ class UserObserver
     /**
      * Handle the user "deleted" event.
      *
-     * @param  \App\=App\User  $user
+     * @param  \App\User  $user
      * @return void
      */
     public function deleted(User $user)
@@ -43,7 +45,7 @@ class UserObserver
     /**
      * Handle the user "restored" event.
      *
-     * @param  \App\=App\User  $user
+     * @param  \App\User  $user
      * @return void
      */
     public function restored(User $user)
@@ -54,7 +56,7 @@ class UserObserver
     /**
      * Handle the user "force deleted" event.
      *
-     * @param  \App\=App\User  $user
+     * @param  \App\User  $user
      * @return void
      */
     public function forceDeleted(User $user)

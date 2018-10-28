@@ -2,7 +2,7 @@
 
 namespace Tests\BotMan;
 
-use App\{User, Operator, Placement};
+use App\{Placement, User, Operator, Staff};
 use Tests\TestCase;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -41,12 +41,14 @@ class VerifyTest extends TestCase
 
         $mobile = '09178251991';
         $authy_id = '106530563';
+        $driver = TelegramDriver::DRIVER_NAME;
+        $channel_id = '111111';
 
         $user = factory(Operator::class)->create(compact('mobile', 'authy_id'));
         $this->admin->appendNode($user);
 
         $this->bot
-            ->setUser(['id' => 111111])
+            ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives("verify")
             ->assertQuestion("Please enter mobile number.") 
@@ -63,6 +65,23 @@ class VerifyTest extends TestCase
             ->receives('123456')
             ->assertReply("Yehey!") 
             ;
+
+        // dd(Placement::all()->pluck('code', 'type'));
+        // $user->refresh;
+
+        // $this->assertDatabaseHas('placements', [
+        //     [
+        //         'user_id' => $user->id,
+        //         // 'code' => 'abc',
+        //         'type' => Operator::class,
+        //     ],
+        //     [
+        //         'user_id' => $user->id,
+        //         // 'code' => 'def',
+        //         'type' => Staff::class,
+        //     ]
+
+        // ]);
 
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
 
