@@ -41,7 +41,7 @@ $botman->hears('/signup|SIGN_UP', function (BotMan $bot) {
 })->stopsConversation();
 
 $botman->hears('/register {attributes}', UserController::class.'@register');
-$botman->hears('REGISTER_MOBILE {attributes}', UserController::class.'@register');
+// $botman->hears('REGISTER_MOBILE {attributes}', UserController::class.'@register');
 
 $botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
     $bot->startConversation(new Verify());

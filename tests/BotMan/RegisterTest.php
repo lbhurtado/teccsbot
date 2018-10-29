@@ -64,6 +64,39 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
+    public function register_inputs_mobile_code_successful_old_user()
+    {
+        \Queue::fake();
+
+        $name = $this->faker->name;
+        $number = '09178251991';
+        $code = 'Operator';
+        $driver = TelegramDriver::DRIVER_NAME;
+        $channel_id = '111111';
+        
+        $this->bot
+            ->setUser(['id' => $channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives("{$this->keyword} $code $number")
+            ->assertReply("OTP sent.") 
+            ;
+
+        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+
+        $number = '09178251991';
+        $code = 'Staff';
+
+        $this->bot
+            ->setUser(['id' => $channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives("{$this->keyword} $code $number")
+            ->assertReply("OTP sent.") 
+            ;
+
+        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+    }
+
+    /** @test */
     public function register_inputs_mobile_code_failed_no_user()
     {
         \Queue::fake();

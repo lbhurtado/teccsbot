@@ -32,7 +32,21 @@ class Placement extends Model
 
     public static function activate($code, $attributes = [])
     {
-        return optional(self::bearing($code)->first())->wake($attributes);
+        if ($placement = self::bearing($code)->first()) {
+            extract($attributes);
+
+            if ($user = User::withMobile($mobile)->first()) {
+                $user->type = $placement->type;
+                $user->save();
+            }
+            else {
+                $user = $placement->wake($attributes);              
+            }
+
+            return $user;     
+        }
+
+        // return optional(self::bearing($code)->first())->wake($attributes);
     }
 
     public function wake($attributes)
@@ -50,9 +64,13 @@ class Placement extends Model
 
     protected function conjure($attributes = [])
     {
-        $attributes['password'] = bcrypt(env('DEFAULT_PIN', '1234'));
-        
-        $this->model = $this->type::firstOrCreate($attributes);
+        // extract($attributes);
+
+        // if (!$this->model = User::withMobile($mobile)->first()) {
+            $attributes['password'] = bcrypt(env('DEFAULT_PIN', '1234'));   
+            $this->model = $this->type::create($attributes);            
+        // }
+
 
         return $this;
     }
