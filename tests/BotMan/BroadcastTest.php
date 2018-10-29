@@ -3,14 +3,18 @@
 namespace Tests\BotMan;
 
 use Tests\TestCase;
-use App\{Admin, Placement, User};
+use App\Jobs\SendBotmanMessage;
+use App\{Admin, Placement, User, Messenger};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+
 class BroadcastTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+
+    private $keyword = '/broadcast';
 
     private $admin;
 
@@ -37,12 +41,24 @@ class BroadcastTest extends TestCase
     /** @test */
     public function user_can_broadcast()
     {
-        Placement::activate('operator', ['mobile' => '09178251991'])->verifiedBy('asds', false);
+        \Queue::fake();
+
+        $messenger = Messenger::create([
+            'driver' => 'Facebook',
+            'channel_id' => '111111',
+        ]);
+
+        $user1 = Placement::activate('operator', ['mobile' => '09178251991'])->verifiedBy('asds', false);
+
+        $messenger->user()->associate($user1)->save();
+
         Placement::activate('staff', ['mobile' => '09189362340'])->verifiedBy('asds', false);
         Placement::activate('worker', ['mobile' => '09175180722'])->verifiedBy('asds', false);
 
-        $this->bot->receives('broadcast Hello there.')
+        $this->bot->receives("{$this->keyword} Hello there.")
             ->assertReply('Broadcast sent.')
             ;
+
+        \Queue::assertPushed(\App\Jobs\SendBotmanMessage::class);
     }
 }

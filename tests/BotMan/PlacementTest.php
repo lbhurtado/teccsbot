@@ -12,6 +12,7 @@ class PlacementTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    private $keyword = '/placement';
     private $admin;
 
     function setUp()
@@ -62,7 +63,7 @@ class PlacementTest extends TestCase
         $messenger->save();
 
         $this->bot
-            ->receives("placement")
+            ->receives($this->keyword)
             ->assertReply("abc,def,ghi,jkl") 
             ;
     }

@@ -12,6 +12,8 @@ class VerifyTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    private $keyword = '/verify';
+
     private $admin;
 
     function setUp()
@@ -50,7 +52,7 @@ class VerifyTest extends TestCase
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
-            ->receives("verify")
+            ->receives($this->keyword)
             ->assertQuestion("Please enter mobile number.") 
             ->receives($mobile)
             ->assertQuestion("Please enter your PIN.") 
@@ -59,29 +61,10 @@ class VerifyTest extends TestCase
         $user = User::withMobile($mobile)->first();
         $user->forceFill(['verified_at' => date("Y-m-d H:i:s")])->save();
 
-        // dd($user->isVerified());
-
         $this->bot
             ->receives('123456')
             ->assertReply("Yehey!") 
             ;
-
-        // dd(Placement::all()->pluck('code', 'type'));
-        // $user->refresh;
-
-        // $this->assertDatabaseHas('placements', [
-        //     [
-        //         'user_id' => $user->id,
-        //         // 'code' => 'abc',
-        //         'type' => Operator::class,
-        //     ],
-        //     [
-        //         'user_id' => $user->id,
-        //         // 'code' => 'def',
-        //         'type' => Staff::class,
-        //     ]
-
-        // ]);
 
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
 

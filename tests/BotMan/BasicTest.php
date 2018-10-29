@@ -5,7 +5,7 @@ namespace Tests\BotMan;
 use Illuminate\Foundation\Inspiring;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class BasicTest extends TestCase
 {
     /**
      * A basic test example.
@@ -45,5 +45,21 @@ class ExampleTest extends TestCase
             ->assertQuestion('Huh - you woke me up. What do you need?')
             ->receivesInteractiveMessage('quote')
             ->assertReplyIn($quotes);
+    }
+
+    /** @test */
+    public function bot_start_get_started()
+    {
+        $this->bot
+            ->receives('/start|GET_STARTED')
+            ->assertReply(trans('onboarding.welcome'));
+    }
+
+    /** @test */
+    public function bot_stop()
+    {
+        $this->bot
+            ->receives('/stop|BREAK_CLOSURE')
+            ->assertReply(trans('stopped...'));
     }
 }

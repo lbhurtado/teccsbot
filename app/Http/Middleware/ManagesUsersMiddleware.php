@@ -38,6 +38,9 @@ class ManagesUsersMiddleware implements Received, Captured, Matching, Heard, Sen
      */
     public function received(IncomingMessage $message, $next, BotMan $bot)
     {
+        // $msgr = $bot->getUser();
+        // $first_name = $msgr->getFirstName();
+
         $user = Messenger::firstOrCreate([
             'driver' => $bot->getDriver()->getName(),
             'channel_id' => $message->getSender(),

@@ -70,6 +70,8 @@ class User extends Authenticatable
         $verified = ! $notSimulated || app('rinvex.authy.token')->verify($otp, $this->authy_id)->succeed();
 
         if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
+
+        return $this;
     }   
 
     public function generatePlacements()

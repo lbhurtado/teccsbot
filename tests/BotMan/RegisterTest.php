@@ -13,6 +13,8 @@ class RegisterTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    private $keyword = '/register';
+
     private $admin;
 
     function setUp()
@@ -49,7 +51,7 @@ class RegisterTest extends TestCase
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
-            ->receives("register $code $number")
+            ->receives("{$this->keyword} $code $number")
             ->assertReply("OTP sent.") 
             ;
 
@@ -72,7 +74,7 @@ class RegisterTest extends TestCase
         $this->bot
             ->setUser(['id' => 111111])
             ->setDriver(TelegramDriver::class)
-            ->receives("register $code $number")
+            ->receives("{$this->keyword} $code $number")
             ->assertReply("Try again.") 
             ;
 
@@ -82,7 +84,7 @@ class RegisterTest extends TestCase
         $this->bot
             ->setUser(['id' => 111111])
             ->setDriver(TelegramDriver::class)
-            ->receives("register $code $number")
+            ->receives("{$this->keyword} $code $number")
             ->assertReply("Try again.") 
             ;
 
@@ -93,7 +95,7 @@ class RegisterTest extends TestCase
         $this->bot
             ->setUser(['id' => 111111])
             ->setDriver(TelegramDriver::class)
-            ->receives("register $number $code") //baliktad
+            ->receives("{$this->keyword} $number $code") //baliktad
             ->assertReply("Try again.") 
             ;
 

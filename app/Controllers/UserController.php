@@ -6,7 +6,7 @@ namespace App\Controllers;
 use BotMan\BotMan\BotMan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Jobs\{RequestOTP, VerifyOTP};
+use App\Jobs\{RequestOTP, VerifyOTP, SendBotmanMessage};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -45,13 +45,8 @@ class UserController extends Controller
 
     public function broadcast(BotMan $bot, $message)
     {
-        // dd(User::verified()->get());
-        // foreach(User::verified()->get() as $user) {
-        //     $bot->say($message, $user->channel_id, TelegramDriver::class);
-        // }
-
-        foreach(Messenger::all() as $messenger) {
-            $bot->say($message, $messenger->channel_id, TelegramDriver::class);
+        foreach(Messenger::has('user')->get() as $messenger) {
+            SendBotmanMessage::dispatch($bot, $messenger, $message);
         }
 
         $bot->reply('Broadcast sent.');

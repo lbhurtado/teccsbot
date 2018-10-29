@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use BotMan\Drivers\Facebook\WebDriver;
+use BotMan\Drivers\Telegram\TelegramDriver;
+use BotMan\Drivers\Facebook\FacebookDriver;
 
 class Messenger extends Model
 {
@@ -13,6 +16,25 @@ class Messenger extends Model
     public function turnOnNotifications()
     {
         $this->update(['wants_notifications' => true]);
+    }
+
+    public function getDriverClass()
+    {
+        $driverClass = '';
+        switch (strtolower($this->driver))
+        {
+            case 'telegram':
+                $driverClass = TelegramDriver::class;
+                break;
+            case 'facebook':
+                $driverClass = FacebookDriver::class;
+                break;
+            default:
+                $driverClass = WebDriver::class;
+                break;
+        }
+
+        return $driverClass;
     }
 
     public function scopeWantsUpdates($query)

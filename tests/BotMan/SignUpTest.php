@@ -15,9 +15,11 @@ class SignUpTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    protected $admin;
+    private $keyword = '/signup';
+    
+    private $admin;
 
-    protected $phone_numbers = [
+    private $phone_numbers = [
         '09181111111',
         '09182222222',
         '09183333333',
@@ -57,7 +59,7 @@ class SignUpTest extends TestCase
         $this->bot
             ->setUser(['id' => 111111])
             ->setDriver(TelegramDriver::class)
-            ->receives('signup')
+            ->receives($this->keyword)
             ->assertQuestion('Please enter your name.') 
             ->receives($name)            
             ->assertQuestion('Please enter mobile number.') 
@@ -106,7 +108,7 @@ class SignUpTest extends TestCase
         $this->bot
             ->setUser(['id' => 222222])
             ->setDriver(TelegramDriver::class)
-            ->receives('signup')
+            ->receives($this->keyword)
             ->assertQuestion('Please enter your name.') 
             ->receives($name) 
             ->assertQuestion('Please enter mobile number.') 
@@ -129,7 +131,7 @@ class SignUpTest extends TestCase
         $this->bot
             ->setUser(['id' => 333333])
             ->setDriver(TelegramDriver::class)
-            ->receives('signup')
+            ->receives($this->keyword)
             ->assertQuestion('Please enter your name.') 
             ->receives($name) 
             ->assertQuestion('Please enter mobile number.') 
