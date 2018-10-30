@@ -37,12 +37,14 @@ class Verify extends Conversation
 
             $messenger->save();
 
+            $user->challenge();
+
             return $this->inputPIN($user);
         });
     }
 
     protected function inputPIN($user)
-    {
+    {        
         $question = Question::create("Please enter your PIN.")
             ->fallback('Unable to input PIN.')
             ->callbackId('input_pin')
@@ -57,9 +59,7 @@ class Verify extends Conversation
 
     protected function authenticate($user, $otp)
     {
-        VerifyOTP::dispatch($user, $otp);
-
-        $user->refresh();
+        $user->verify($otp)->refresh();
 
         if (! $user->isVerified()) {
 

@@ -52,7 +52,7 @@ class RegisterTest extends TestCase
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives("{$this->keyword} $code $number")
-            ->assertReply("OTP sent.") 
+            ->assertReply("Invitation sent.") 
             ;
 
         $this->assertDatabaseHas('messengers', [
@@ -60,7 +60,8 @@ class RegisterTest extends TestCase
             'channel_id' => $channel_id,
         ]);
 
-        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+        \Queue::assertPushed(\App\Jobs\InviteUser::class);
+        \Queue::assertNotPushed(\App\Jobs\RequestOTP::class);
     }
 
     /** @test */
@@ -78,10 +79,11 @@ class RegisterTest extends TestCase
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives("{$this->keyword} $code $number")
-            ->assertReply("OTP sent.") 
+            ->assertReply("Invitation sent.") 
             ;
 
-        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+        \Queue::assertPushed(\App\Jobs\InviteUser::class);
+        \Queue::assertNotPushed(\App\Jobs\RequestOTP::class);
 
         $number = '09178251991';
         $code = 'Staff';
@@ -90,10 +92,11 @@ class RegisterTest extends TestCase
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives("{$this->keyword} $code $number")
-            ->assertReply("OTP sent.") 
+            ->assertReply("Invitation sent.") 
             ;
 
-        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+        \Queue::assertPushed(\App\Jobs\InviteUser::class);
+        \Queue::assertNotPushed(\App\Jobs\RequestOTP::class);
     }
 
     /** @test */

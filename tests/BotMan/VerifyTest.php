@@ -58,6 +58,8 @@ class VerifyTest extends TestCase
             ->assertQuestion("Please enter your PIN.") 
             ;
 
+        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+
         $user = User::withMobile($mobile)->first();
         $user->forceFill(['verified_at' => date("Y-m-d H:i:s")])->save();
 

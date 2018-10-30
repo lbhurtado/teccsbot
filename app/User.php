@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\Jobs\RequestOTP;
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
+use App\Jobs\{InviteUser, RequestOTP, VerifyOTP};
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
@@ -40,19 +40,40 @@ class User extends Authenticatable
 
     protected $guard_name = 'web';
  
-    /**
-     * Route notifications for the Authy channel.
-     *
-     * @return int
-     */
+    public function routeNotificationForNexmo($notification)
+    {
+        return $this->mobile;
+    }
+
+    public function routeNotificationForTwilio()
+    {
+        return $this->mobile;
+    }
+
     public function routeNotificationForAuthy()
     {
         return $this->authy_id;
     }
 
-    public function verify()
+    public function invite()
+    {
+        InviteUser::dispatch($this);
+
+        return $this;
+    }
+
+    public function challenge()
     {
         RequestOTP::dispatch($this);
+
+        return $this;
+    }
+
+    public function verify($otp)
+    {
+        VerifyOTP::dispatch($this, $otp);
+
+        return $this;
     }
 
     public function isVerified()
@@ -85,6 +106,8 @@ class User extends Authenticatable
             
             Placement::record(compact('code', 'type', 'message'), $this);   
         }
+
+        return $this;
     }
 
     public function setMobileAttribute($value)
@@ -115,5 +138,10 @@ class User extends Authenticatable
     public function scopeVerified($query)
     {
         return $query->whereNotNull('verified_at')->where('verified_at', '<=', now());
+    }
+
+    public function canReceiveAlphanumericSender()
+    {
+        return true;   
     }
 }

@@ -18,9 +18,9 @@ class UserController extends Controller
     {
     	if ($attributes = Register::attributes($arguments)) {
             if ($user = Placement::activate(array_pull($attributes,'code'), $attributes)) {
-                $user->verify();
-                
-                return $bot->reply('OTP sent.');  
+                $user->invite();
+                // $user->verify();
+                return $bot->reply('Invitation sent.');  
             }   
     	}
 
