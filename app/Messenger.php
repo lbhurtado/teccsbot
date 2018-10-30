@@ -13,11 +13,6 @@ class Messenger extends Model
         'driver', 'channel_id', 'first_name', 'last_name', 'wants_notifications',
     ];
 
-    public function turnOnNotifications()
-    {
-        $this->update(['wants_notifications' => true]);
-    }
-
     public function getDriverClass()
     {
         $driverClass = '';
@@ -35,6 +30,11 @@ class Messenger extends Model
         }
 
         return $driverClass;
+    }
+
+    public function turnOnNotifications()
+    {
+        $this->update(['wants_notifications' => true]);
     }
 
     public function scopeWantsUpdates($query)

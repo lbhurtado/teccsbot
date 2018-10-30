@@ -4,7 +4,7 @@ use BotMan\BotMan\BotMan;
 
 use App\Controllers\UserController;
 use BotMan\BotMan\Middleware\ApiAi;
-use App\Conversations\{SignUp, Verify};
+use App\Conversations\{SignUp, Verify, Onboarding};
 use BotMan\BotMan\Middleware\Dialogflow;
 use App\Http\Controllers\BotManController;
 use App\Http\Middleware\ManagesUsersMiddleware;
@@ -15,9 +15,9 @@ $botman->hears('Hi', function (BotMan $bot) {
     $bot->reply('Hello!');
 });
 
-$botman->hears('/start|GET_STARTED', function (BotMan $bot) {
-    $bot->reply(trans('onboarding.welcome'));
-});
+// $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
+//     $bot->reply(trans('onboarding.welcome', ['name' => config('app.name')]));
+// });
 
 $botman->hears('Start conversation|BREAK_SILENCE', BotManController::class.'@startConversation');
 
@@ -51,10 +51,15 @@ $botman->hears('/placement', UserController::class.'@placement');
 
 $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 
+$botman->hears('/traverse', UserController::class.'@traverse');
+
 $botman->fallback(function (BotMan $bot){
+    // dd($bot->getMessage()->getExtras('is_new_user'));
+    if ($bot->getMessage()->getExtras('is_new_user')) {
+        return $bot->startConversation(new Onboarding);
+    }
+
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
 });
-
-$botman->hears('/traverse', UserController::class.'@traverse');
 
 
