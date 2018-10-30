@@ -23,9 +23,34 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 Route::get('/test', function () {
 
-    $user = \App\Operator::create(['mobile' => '09189262340', 'password' => bcrypt('1234')]);
+  $messenger = App\Messenger::where([
+    'channel_id' => '650334894',
+    'driver' => 'Telegram'
+  ])->first();
 
-    dd($user);
+  $user = App\User::withMobile('09178251991')->first();
+
+  // $messenger->user()->associate($user);
+
+  // $messenger->save();
+
+  // $user->refresh();
+  // dd($user);
+
+  $user->verify('803407')->refresh();
+
+  dd($user->isVerified());
+
+  // sleep(1);
+  // $user->challenge();
+  // \App\Jobs\RequestOTP::dispatch($user);
+  // sleep(1);
+
+
+    // $user = \App\Operator::create(['mobile' => '09189262340', 'password' => bcrypt('1234')]);
+
+    // dd($user);
+
 
     // event(new UserWasRecorded($user));
     // $user->generatePlacements();

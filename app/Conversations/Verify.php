@@ -37,6 +37,8 @@ class Verify extends Conversation
 
             $messenger->save();
 
+            // this is not working
+
             $user->challenge();
 
             return $this->inputPIN($user);
@@ -61,10 +63,11 @@ class Verify extends Conversation
     {
         $user->verify($otp)->refresh();
 
-        if (! $user->isVerified()) {
+        // this is not working
+        // if (! $user->isVerified()) {
 
-            return $this->inputPIN($user);
-        }
+        //     return $this->inputPIN($user);
+        // }
 
         $user->generatePlacements();
         
