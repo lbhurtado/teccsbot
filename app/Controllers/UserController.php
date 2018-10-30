@@ -51,4 +51,24 @@ class UserController extends Controller
 
         $bot->reply('Broadcast sent.');
     }
+
+    public function traverse(BotMan $bot)
+    {
+        $nodes = User::get()->toTree();
+
+        $str = '';
+        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$str) {
+            foreach ($categories as $category) {
+                $str .= PHP_EOL.$prefix.' '.$category->name.' ('.$category->mobile.')';
+
+                $traverse($category->children, $prefix.'-');
+            }
+        };
+
+        $traverse($nodes);
+
+        // dd($str);
+
+        $bot->reply('Traversed.');
+    }
 }

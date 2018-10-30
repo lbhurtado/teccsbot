@@ -54,3 +54,7 @@ $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 $botman->fallback(function (BotMan $bot){
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
 });
+
+$botman->hears('/traverse', UserController::class.'@traverse');
+
+
