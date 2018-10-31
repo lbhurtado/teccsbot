@@ -2,9 +2,10 @@
 
 namespace App\Traits;
 
-use Spatie\Permission\Models\Role;
+use App\Enum\Permission as Permissions;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\NoRoleDefined;
+use Spatie\Permission\Models\{Role, Permission};
 use Tightenco\Parental\HasParentModel as BaseHasParentModel;
 
 trait HasParentModel
@@ -30,8 +31,14 @@ trait HasParentModel
 
                 throw new NoRoleDefined();
             }
-            
-            Role::findOrCreate(self::$role, $model->getGuardName());
+
+            $role = Role::findOrCreate(self::$role, $model->getGuardName());
+
+            if (isset(self::$permissions)) {
+                foreach (self::$permissions as $permission) {
+                    $role->givePermissionTo(Permission::findOrCreate($permission));
+                }                
+            }
 
             $model->assignRole(self::$role);            
         });

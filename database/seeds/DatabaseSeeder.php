@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
     	
+        $this->call(PermissionSeeder::class);
 		$this->call(AdminSeeder::class);
         $this->call(PlacementSeeder::class);
 

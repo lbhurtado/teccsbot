@@ -40,6 +40,11 @@ class User extends Authenticatable
 
     protected $guard_name = 'web';
  
+    public static function seed($code, $mobile)
+    {
+        return (static::$classes[$code])::firstOrCreate(['mobile' => $mobile]);
+    }
+
     public function routeNotificationForNexmo($notification)
     {
         return $this->mobile;

@@ -10,9 +10,20 @@ use App\Events\User\UserEvents;
 class UserObserver
 {
     /**
+     * Handle the user "creating" event.
+     *
+     * @param  \App\User  $user
+     * @return void
+     */
+    public function creating(User $user)
+    {
+        $user->password = $user->password ?? bcrypt('1234'); 
+    }
+
+    /**
      * Handle the user "created" event.
      *
-     * @param  \App\=App\User  $user
+     * @param  \App\User  $user
      * @return void
      */
     public function created(User $user)
