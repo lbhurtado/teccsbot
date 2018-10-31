@@ -65,15 +65,11 @@ class User extends Authenticatable
     public function challenge()
     {
         RequestOTP::dispatch($this);
-
-        return $this;
     }
 
     public function verify($otp)
     {
         VerifyOTP::dispatch($this, $otp);
-
-        return $this;
     }
 
     public function isVerified()

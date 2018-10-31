@@ -61,7 +61,9 @@ class Verify extends Conversation
 
     protected function authenticate($user, $otp)
     {
-        $user->verify($otp)->refresh();
+        $user->verify($otp);
+
+        $user->refresh();
 
         // this is not working
         // if (! $user->isVerified()) {
