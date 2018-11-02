@@ -17,6 +17,6 @@ class UserEventsTest extends TestCase
         factory(\App\User::class)->create();
 
         \Queue::assertPushed(\App\Jobs\RegisterAuthyService::class); 
-        \Queue::assertPushed(\App\Jobs\GenerateUserPlacements::class);        
+        // \Queue::assertPushed(\App\Jobs\GenerateUserPlacements::class);        
     }
 }

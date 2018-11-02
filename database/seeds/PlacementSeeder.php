@@ -12,7 +12,8 @@ class PlacementSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('placements')->truncate();
+        // DB::table('placements')->truncate();
+        DB::table('placements')->delete();
 
         $admin = Admin::first();
 

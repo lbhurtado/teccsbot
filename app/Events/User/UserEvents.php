@@ -4,7 +4,7 @@ namespace App\Events\User;
 
 class UserEvents
 {
-	const CREATED = 'user.created';
-
-	const UPDATED = 'user.updated';
+	const CREATING = 'user.creating';
+	const CREATED  = 'user.created';
+	const UPDATED  = 'user.updated';
 }

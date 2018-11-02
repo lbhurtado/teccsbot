@@ -18,6 +18,9 @@ class UserObserver
     public function creating(User $user)
     {
         $user->password = $user->password ?? bcrypt('1234'); 
+        
+        event(UserEvents::CREATING, new UserEvent($user));
+
     }
 
     /**

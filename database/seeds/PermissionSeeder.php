@@ -8,7 +8,8 @@ class PermissionSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('permissions')->truncate();
+        // DB::table('permissions')->truncate();
+        DB::table('permissions')->delete();
         
         $permissions = array_values(Permissions::toArray());
         foreach ($permissions as $name ) {

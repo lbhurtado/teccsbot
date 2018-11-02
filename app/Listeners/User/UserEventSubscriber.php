@@ -9,6 +9,13 @@ use App\Jobs\GenerateUserPlacements;
 
 class UserEventSubscriber
 {
+    /**
+     * @param UserEvent $event
+     */
+    public function onUserCreating(UserEvent $event)
+    {
+        $user = $event->getUser();
+    }
 
     /**
      * @param UserEvent $event
@@ -18,7 +25,7 @@ class UserEventSubscriber
     	$user = $event->getUser();
 
     	RegisterAuthyService::dispatch($user);
-    	GenerateUserPlacements::dispatch($user);
+    	// GenerateUserPlacements::dispatch($user);
     }
 
     /**
@@ -36,6 +43,11 @@ class UserEventSubscriber
      */
     public function subscribe($events)
     {
+        $events->listen(
+            UserEvents::CREATING, 
+            UserEventSubscriber::class.'@onUserCreating'
+        );
+
         $events->listen(
             UserEvents::CREATED, 
             UserEventSubscriber::class.'@onUserCreated'
