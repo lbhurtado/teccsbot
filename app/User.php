@@ -68,6 +68,23 @@ class User extends Authenticatable
         return $this->authy_id;
     }
 
+    public function routeNotificationForTelegram()
+    {
+        return optional($this->messengers()->where('driver','Telegram')->first())->channel_id;
+    }
+
+    public function routeNotificationForFacebook()
+    {
+        $id = optional($this->messengers()->where('driver','Facebook')->first())->channel_id;
+
+        return compact('id');
+    }
+
+    public function getDefaultRoute()
+    {
+        return $this->messengers()->whereIn('driver',['Telegram','Facebook'])->first()->driver;
+    }
+
     public function invite()
     {
         InviteUser::dispatch($this);

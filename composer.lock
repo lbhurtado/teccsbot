@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a26bc69c934c2bdc60e1c7b56a2611a",
+    "content-hash": "f96983a875eb17a0eb4ab6930fca3598",
     "packages": [
         {
             "name": "botman/botman",
@@ -201,6 +201,64 @@
                 "telegram"
             ],
             "time": "2018-07-30T20:18:18+00:00"
+        },
+        {
+            "name": "botman/driver-twilio",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/botman/driver-twilio.git",
+                "reference": "c6accd7198b269c9b8e53c5a31ce97e20d28a11a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/botman/driver-twilio/zipball/c6accd7198b269c9b8e53c5a31ce97e20d28a11a",
+                "reference": "c6accd7198b269c9b8e53c5a31ce97e20d28a11a",
+                "shasum": ""
+            },
+            "require": {
+                "botman/botman": "~2.0",
+                "php": ">=7.0",
+                "twilio/sdk": "^5.15"
+            },
+            "require-dev": {
+                "botman/studio-addons": "~1.0",
+                "ext-curl": "*",
+                "illuminate/contracts": "~5.5.0",
+                "mockery/mockery": "dev-master",
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BotMan\\Drivers\\Twilio\\Providers\\TwilioServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BotMan\\Drivers\\Twilio\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcel Pociot",
+                    "email": "m.pociot@gmail.com"
+                }
+            ],
+            "description": "Twilio driver for BotMan",
+            "homepage": "http://github.com/botman/driver-twilio",
+            "keywords": [
+                "Botman",
+                "bot",
+                "twilio"
+            ],
+            "time": "2018-05-30T15:27:31+00:00"
         },
         {
             "name": "botman/driver-web",
@@ -1502,6 +1560,120 @@
                 "verification"
             ],
             "time": "2018-09-21T22:02:35+00:00"
+        },
+        {
+            "name": "laravel-notification-channels/facebook",
+            "version": "v0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-notification-channels/facebook.git",
+                "reference": "033aaa9782c93146a60c4243cd1440d80202526c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-notification-channels/facebook/zipball/033aaa9782c93146a60c4243cd1440d80202526c",
+                "reference": "033aaa9782c93146a60c4243cd1440d80202526c",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "illuminate/notifications": "^5.3",
+                "illuminate/support": "^5.1",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NotificationChannels\\Facebook\\FacebookServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NotificationChannels\\Facebook\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Syed Irfaq R.",
+                    "email": "syed@lukonet.com",
+                    "homepage": "https://lukonet.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Facebook Notifications Channel for Laravel 5.3",
+            "homepage": "https://github.com/laravel-notification-channels/facebook",
+            "time": "2018-09-09T21:55:18+00:00"
+        },
+        {
+            "name": "laravel-notification-channels/telegram",
+            "version": "0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-notification-channels/telegram.git",
+                "reference": "9c5863137e9db65e23036d1a4e45ad00b1c2e96e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-notification-channels/telegram/zipball/9c5863137e9db65e23036d1a4e45ad00b1c2e96e",
+                "reference": "9c5863137e9db65e23036d1a4e45ad00b1c2e96e",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "illuminate/notifications": ">=5.3",
+                "illuminate/support": ">=5.1",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "orchestra/testbench": "3.4.x-dev",
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NotificationChannels\\Telegram\\TelegramServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NotificationChannels\\Telegram\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Syed Irfaq R.",
+                    "email": "syed@lukonet.com",
+                    "homepage": "https://lukonet.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Telegram Notifications Driver",
+            "homepage": "https://github.com/laravel-notification-channels/telegram",
+            "keywords": [
+                "laravel",
+                "notification",
+                "telegram",
+                "telegram notification",
+                "telegram notifications channel"
+            ],
+            "time": "2018-09-05T14:24:44+00:00"
         },
         {
             "name": "laravel-notification-channels/twilio",

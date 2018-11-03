@@ -52,4 +52,12 @@ return [
     'authy' => [
         'secret' => env('AUTHY_SECRET'),
     ],
+
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_TOKEN')
+    ],
+
+    'facebook' => [
+        'page-token' => env('FACEBOOK_TOKEN')
+    ],
 ];
