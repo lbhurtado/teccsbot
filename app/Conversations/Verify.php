@@ -6,38 +6,64 @@ use App\{Phone, User, Messenger};
 use App\Jobs\VerifyOTP;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 
 class Verify extends Conversation
 {
     public function run()
     {
-    	$this->inputMobile();
-    }
-
-    protected function inputMobile()
-    {
-        $question = Question::create("Please enter mobile number.")
-            ->fallback('Unable to input mobile.')
-            ->callbackId('input_mobile')
-            ;
-
         $messenger = Messenger::where([
             'driver' => $this->bot->getDriver()->getName(),
             'channel_id' => $this->bot->getUser()->getId(),
         ])->first();
 
+    	$this->introduction()->inputMobile($messenger);
+    }
+
+    protected function introduction()
+    {
+        $this->bot->reply(trans('verify.introduction'));
+
+        return $this;
+    }
+
+    protected function inputMobile($messenger)
+    {
+        $question = Question::create(trans('verify.input.mobile'))
+            ->fallback(trans('verify.mobile.error'))
+            ->callbackId('verify.input.mobile')
+            ;
+
         return $this->ask($question, function (Answer $answer) use ($messenger) {
-            if (!$mobile = Phone::validate($answer->getText()))
-                $this->repeat();
+            if (!$mobile = $this->checkMobile($answer->getText()))
+                return $this->repeat(trans('verify.input.mobile'));
 
-            $user = User::withMobile($mobile)->first();
+            return $this->verify($messenger, $mobile);
+        });
+    }
 
-            $messenger->user()->associate($user);
+    protected function verify($messenger, $mobile)
+    {
+        $question = Question::create(trans('verify.input.verify', [
+            'mobile' => $mobile
+        ]))
+        ->fallback(trans('verify.verify.error'))
+        ->callbackId('verify.input.verify')
+        ->addButtons([
+            Button::create(trans('verify.input.yes'))->value('Yes'),
+            Button::create(trans('verify.input.no'))->value('No')
+        ]);
 
-            $messenger->save();
+        $this->ask($question, function (Answer $answer) use ($messenger, $mobile) {
+            if ($answer->isInteractiveMessageReply()) {
+                if ($answer->getValue() == 'No') {
 
-            // this is not working
+                    return $this->inputMobile($messenger);
+                }
+            }      
+
+            $user = $this->associateMessengerFromMobile($messenger, $mobile);
 
             $user->challenge();
 
@@ -47,32 +73,42 @@ class Verify extends Conversation
 
     protected function inputPIN($user)
     {        
-        $question = Question::create("Please enter your PIN.")
-            ->fallback('Unable to input PIN.')
-            ->callbackId('input_pin')
+        $question = Question::create(trans('verify.input.pin'))
+            ->fallback(trans('verify.pin.error'))
+            ->callbackId('verify.input.pin')
             ;
 
         return $this->ask($question, function (Answer $answer) use ($user) {
             $otp = $answer->getText();
 
-            return $this->authenticate($user, $otp);
+            return $this->process($user, $otp);
         });   
     }
 
-    protected function authenticate($user, $otp)
+    protected function process($user, $otp)
     {
-        $user->verify($otp);
+        $user->verify($otp)->refresh();
 
-        $user->refresh();
+        if (! $user->isVerified()) {
+            $this->bot->reply(trans('verify.fail'));
 
-        // this is not working
-        // if (! $user->isVerified()) {
-
-        //     return $this->inputPIN($user);
-        // }
-
-        $user->generatePlacements();
+            return $this->inputPIN($user);
+        }
         
-        $this->bot->reply('Yehey!');
+        $this->bot->reply(trans('verify.success'));
+    }
+
+    protected function checkMobile($mobile)
+    {
+        return Phone::validate($mobile);
+    }
+
+    protected function associateMessengerFromMobile($messenger, $mobile)
+    {
+        $user = User::withMobile($mobile)->first();
+        $messenger->user()->associate($user);
+        $messenger->save();
+
+        return $user;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\BotMan;
 
-use App\{Placement, User, Operator, Staff};
+use App\{User, Operator, Messenger, Phone};
 use Tests\TestCase;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,6 +14,8 @@ class VerifyTest extends TestCase
 
     private $keyword = '/verify';
 
+    private $channel_id;
+
     private $admin;
 
     function setUp()
@@ -24,51 +26,65 @@ class VerifyTest extends TestCase
 
         $this->faker = $this->makeFaker('en_PH');
 
+        $this->channel_id = $this->faker->randomNumber(8);
+        $this->messenger = Messenger::create([
+            'driver' => 'Telegram', 
+            'channel_id' => $this->channel_id
+        ]);
+
+        // just to create the permissions
         $this->admin = factory(\App\Admin::class)->create(['name' => 'Admin']);
 
-        foreach(User::$classes as $key => $values) {
-            $code = $key;
-            $type = $values;
-            $message = env('BOT_REGISTRATION_MESSAGE_'.strtoupper($key), 'You are now a registered '.strtolower($key).'.');
-            Placement::record(compact('code', 'type', 'message'), $this->admin);      
-        }
         // InvalidArgumentException: Unknown setter 'date'
         // $this->artisan('db:seed', ['--class' => 'DatabaseSeeder']);
     }
 
     /** @test */
-    public function verify_inputs_number_otp()
+    public function verify_successful_run_with_verify_ask_again()
     {
         \Queue::fake();
 
-        $mobile = '09178251991';
+        $mobile = Phone::number('09178251991');
         $authy_id = '106530563';
         $driver = TelegramDriver::DRIVER_NAME;
-        $channel_id = '111111';
+        $channel_id = $this->faker->randomNumber(8);
+        $pin = $this->faker->randomNumber(6);
+        $affirmative = 'Yes';
+        $negative = 'No';
 
         $user = factory(Operator::class)->create(compact('mobile', 'authy_id'));
         $this->admin->appendNode($user);
 
         $this->bot
-            ->setUser(['id' => $channel_id])
+            ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
-            ->assertQuestion("Please enter mobile number.") 
+            ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion("Please enter your PIN.") 
+            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->receivesInteractiveMessage($negative)
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($mobile)
+            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->receivesInteractiveMessage($affirmative)
             ;
 
         \Queue::assertPushed(\App\Jobs\RequestOTP::class);
 
-        $user = User::withMobile($mobile)->first();
-        $user->forceFill(['verified_at' => date("Y-m-d H:i:s")])->save();
+        $user->verifiedBy($pin, false);
 
         $this->bot
-            ->receives('123456')
-            ->assertReply("Yehey!") 
+            ->assertQuestion(trans('verify.input.pin'))
+            ->receives($pin)                        
             ;
 
+        // $user->verifiedBy($pin, false); //this is supposed to be here but it doesn't work
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
+
+        $this->bot
+            ->assertReply(trans('verify.success'))
+            ;
 
         $nodes = User::get()->toTree();
 
@@ -83,5 +99,104 @@ class VerifyTest extends TestCase
         $traverse($nodes);
         echo PHP_EOL.' ';
         echo PHP_EOL.' ';
+    }
+
+    /** @test */
+    public function verify_invalid_mobile_ask_again()
+    {
+        \Queue::fake();
+
+        $invalid_mobile = '111';
+        $mobile = Phone::number('09178251991');
+        $authy_id = '106530563';
+        $driver = TelegramDriver::DRIVER_NAME;
+        $channel_id = $this->faker->randomNumber(8);
+        $wrong_pin = $this->faker->randomNumber(6);
+        $pin = $this->faker->randomNumber(6);
+        $affirmative = 'Yes';
+        $negative = 'No';
+
+        $user = factory(Operator::class)->create(compact('mobile', 'authy_id'));
+        $this->admin->appendNode($user);
+
+        $this->bot
+            ->setUser(['id' => $this->channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives($this->keyword)
+            ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($invalid_mobile)
+            ->assertReply(trans('verify.input.mobile'))
+            ->receives($mobile)
+            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->receivesInteractiveMessage($affirmative)
+            ;
+
+        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+
+        $user->verifiedBy($pin, false);
+
+        $this->bot
+            ->assertQuestion(trans('verify.input.pin'))
+            ->receives($pin)                        
+            ;
+
+        \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
+
+        $this->bot
+            ->assertReply(trans('verify.success'))
+            ;
+    }
+
+    /** @test */
+    public function verify_invalid_pin_ask_again()
+    {
+        \Queue::fake();
+
+        $mobile = Phone::number('09178251991');
+        $authy_id = '106530563';
+        $driver = TelegramDriver::DRIVER_NAME;
+        $channel_id = $this->faker->randomNumber(8);
+        $wrong_pin = $this->faker->randomNumber(6);
+        $pin = $this->faker->randomNumber(6);
+        $affirmative = 'Yes';
+        $negative = 'No';
+
+        $user = factory(Operator::class)->create(compact('mobile', 'authy_id'));
+        $this->admin->appendNode($user);
+
+        $this->bot
+            ->setUser(['id' => $this->channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives($this->keyword)
+            ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($mobile)
+            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->receivesInteractiveMessage($negative)
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($mobile)
+            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->receivesInteractiveMessage($affirmative)
+            ;
+
+        \Queue::assertPushed(\App\Jobs\RequestOTP::class);
+
+        // $user->verifiedBy($pin, false);  //simulates a wrong pin
+
+        $this->bot
+            ->assertQuestion(trans('verify.input.pin'))
+            ->receives($wrong_pin)     
+            ->assertReply(trans('verify.fail'))                   
+            ;
+
+        \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
+        $user->verifiedBy($pin, false);
+
+        $this->bot
+            ->assertQuestion(trans('verify.input.pin'))
+            ->receives($pin)                        
+            ->assertReply(trans('verify.success'))
+            ;
     }
 }

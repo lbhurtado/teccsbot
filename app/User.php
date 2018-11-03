@@ -83,6 +83,8 @@ class User extends Authenticatable
     public function verify($otp)
     {
         VerifyOTP::dispatch($this, $otp);
+
+        return $this;
     }
 
     public function isVerified()

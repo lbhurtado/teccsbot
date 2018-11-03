@@ -28,10 +28,6 @@ $usersMiddleware = new ManagesUsersMiddleware;
 $botman->middleware->received($usersMiddleware);
 // $botman->middleware->matching($usersMiddleware);
 
-// $botman->hears('test', function (BotMan $bot) {
-//     $bot->startConversation(new TestConversation());
-// })->stopsConversation();
-
 $botman->hears('/stop|\s', function(BotMan $bot) {
 	$bot->reply('stopped...');
 })->stopsConversation();
@@ -40,16 +36,15 @@ $botman->hears('/invite', function (BotMan $bot) {
     $bot->startConversation(new Invite());
 })->stopsConversation();
 
+$botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
+    $bot->startConversation(new Verify());
+})->stopsConversation();
+
 $botman->hears('/signup|SIGN_UP', function (BotMan $bot) {
     $bot->startConversation(new SignUp());
 })->stopsConversation();
 
 $botman->hears('/register {attributes}', UserController::class.'@register');
-// $botman->hears('REGISTER_MOBILE {attributes}', UserController::class.'@register');
-
-$botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
-    $bot->startConversation(new Verify());
-})->stopsConversation();
 
 $botman->hears('/placement', UserController::class.'@placement');
 
@@ -58,7 +53,6 @@ $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 $botman->hears('/traverse', UserController::class.'@traverse');
 
 $botman->fallback(function (BotMan $bot){
-    // dd($bot->getMessage()->getExtras('is_new_user'));
     if ($bot->getMessage()->getExtras('is_new_user')) {
         return $bot->startConversation(new Onboarding);
     }
