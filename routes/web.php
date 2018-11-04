@@ -11,8 +11,9 @@
 |
 */
 
-use App\Placement;
+use App\{Messenger, Placement};
 use App\Events\UserWasRecorded;
+use App\Jobs\{RequestOTP, VerifyOTP, SendBotmanMessage, Broadcast};
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,61 +24,75 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 Route::get('/test', function () {
 
-  $messenger = App\Messenger::where([
-    'channel_id' => '650334894',
-    'driver' => 'Telegram'
-  ])->first();
+  // $messenger = App\Messenger::where([
+  //   'channel_id' => '650334894',
+  //   'driver' => 'Telegram'
+  // ])->first();
 
-  $user = App\User::withMobile('09178251991')->first();
+  // $user = App\User::find(22);
 
-  // $messenger->user()->associate($user);
+  // dd($user->descendants);
 
-  // $messenger->save();
+  // $tree = App\User::get()->toTree();
 
-  // $user->refresh();
-  // dd($user);
+  // dd($tree);
 
-  $user->verify('803407')->refresh();
+  // $x = App\User::scoped(['id' => 1])->with('descendants')->has('messengers')->get();
 
-  dd($user->isVerified());
+        $messenger = Messenger::where([
+            'driver' => 'Web',
+            'channel_id' => '1541296827288',
+        ])->first();
 
-  // sleep(1);
-  // $user->challenge();
-  // \App\Jobs\RequestOTP::dispatch($user);
-  // sleep(1);
+        Broadcast::dispatch($messenger->user, 'Yo Job');
 
+  // $admin = App\User::find(29);
+  // $users = App\User::defaultOrder()->descendantsAndSelf(29);
+  // $users = App\User::defaultOrder()->descendantsOf($admin)->where('messenger','!=',null);
 
-    // $user = \App\Operator::create(['mobile' => '09189262340', 'password' => bcrypt('1234')]);
+  // Notification::send($users, new App\Notifications\OnDemand('downline of Admin'));
+  // dd($users);
 
-    // dd($user);
+  // $node = App\User::create([
+  //     'mobile' => '09173011987',
+  //     'type' => 'App\Admin',
+  //     'children' => [
+  //         [
+  //             'mobile' => '09178251991',
+  //             'type' => 'App\Operator',
+  //             'children' => [
+  //                 [ 
+  //                   'mobile' => '09189362340', 
+  //                   'type' => 'App\Staff',
+  //                 ],
+  //             ],
+  //         ],
+  //         [
+  //             'mobile' => '09088882786',
+  //             'type' => 'App\Operator',
+  //             'children' => [
+  //                 [ 
+  //                   'mobile' => '09175180722', 
+  //                   'type' => 'App\Staff',
+  //                 ],
+  //             ],
+  //         ],
+  //     ],
+  // ]);
 
+  // dd($node);
 
-    // event(new UserWasRecorded($user));
-    // $user->generatePlacements();
-        // event(new UserWasFlagged($user));
-        // \App\Jobs\RequestOTP::dispatch($user);
-    // \App\Jobs\VerifyOTP::dispatch($user, '182112');
+  // $nodes = App\User::get()->toTree();
 
+  // $traverse = function ($categories, $prefix = '-') use (&$traverse) {
+  //     foreach ($categories as $category) {
+  //         echo PHP_EOL.$prefix.' '.$category->mobile;
 
-    // $user->notify(new PhoneVerification('sms', true));
+  //         $traverse($category->children, $prefix.'-');
+  //     }
+  // };
 
-    // if (validate($mobile)) {
-
-    //     dd(trans('registration.input.mobile'));
-
-		// $code = 'operator';
-
-  //       $attributes = [
-  //           'mobile' => '09178251991',
-  //           // 'name' => 'Test User',
-  //       ];
-
-  //       optional(Placement::activate($code, $attributes), function($model) {
-
-  //           dd($model);
-  //       });
-
-    // }
-
+  // $traverse($nodes);
+ 
     dd('should not be here!');
 });

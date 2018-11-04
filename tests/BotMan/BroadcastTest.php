@@ -59,6 +59,6 @@ class BroadcastTest extends TestCase
             ->assertReply('Broadcast sent.')
             ;
 
-        \Queue::assertPushed(\App\Jobs\SendBotmanMessage::class);
+        \Queue::assertPushed(\App\Jobs\Broadcast::class);
     }
 }

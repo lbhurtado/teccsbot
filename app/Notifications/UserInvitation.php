@@ -67,17 +67,30 @@ class UserInvitation extends Notification
      */
     public function toArray($notifiable)
     {
+        $messenger = $notifiable->getDefaultMessenger();
+
         return [
-            //
+            'driver' => $messenger->driver,
+            'channel_id' => $messenger->channel_id,
+            'url' => $this->getURL(),
         ];
     }
 
     public function toTwilio($notifiable)
     {
+        $url = $this->getURL($notifiable);
+
         return (new TwilioSmsMessage())
-            ->content("Hi. You're invited to join Manong Johnny - A Virtual Talk Show. Click http://m.me/dyagwarbot to enlist. - serbis.io")
+            ->content(trans('invite.notification',compact('url')))
             // ->from('+13104992907')
             // ->from('MG6cfe25a8cfc5287e5a66055556bfe930')
             ;
+    }
+
+    protected function getURL($notifiable)
+    {
+        return (optional($notifiable->getDefaultMessenger())->driver == 'Telegram') 
+                ? 'http://t.me/grassroots_bot'
+                : 'http://m.me/dyagwarbot';
     }
 }

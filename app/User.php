@@ -27,7 +27,7 @@ class User extends Authenticatable
     ];
 
     protected $fillable = [
-        'name', 'email', 'password', 'mobile'
+        'name', 'email', 'password', 'mobile', 'type',
     ];
 
     protected $dates = [
@@ -39,7 +39,9 @@ class User extends Authenticatable
     ];
 
     protected $guard_name = 'web';
- 
+
+    protected $appends = ['messenger'];
+
     public static function seed($code, $mobile, $parent)
     {
         if (! $model = static::withMobile($mobile)->first()) {
@@ -80,9 +82,9 @@ class User extends Authenticatable
         return compact('id');
     }
 
-    public function getDefaultRoute()
+    public function getDefaultMessenger()
     {
-        return $this->messengers()->whereIn('driver',['Telegram','Facebook'])->first()->driver;
+        return $this->messengers()->whereIn('driver',['Telegram','Facebook'])->first();
     }
 
     public function invite()
@@ -146,6 +148,11 @@ class User extends Authenticatable
     public function getNameAttribute($value)
     {
         return $value ? ucfirst($value) : $this->mobile;
+    }
+
+    public function getMessengerAttribute()
+    {
+        return optional($this->getDefaultMessenger())->driver;
     }
 
     public function messengers()

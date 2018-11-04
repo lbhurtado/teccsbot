@@ -16,7 +16,7 @@ class Messenger extends Model
     public function getDriverClass()
     {
         $driverClass = '';
-        switch (strtolower($this->driver))
+        switch ($this->getDriver())
         {
             case 'telegram':
                 $driverClass = TelegramDriver::class;
@@ -30,6 +30,11 @@ class Messenger extends Model
         }
 
         return $driverClass;
+    }
+
+    public function getDriver()
+    {
+        return strtolower($this->driver);
     }
 
     public function turnOnNotifications()

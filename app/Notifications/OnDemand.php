@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use App\Broadcasting\MessengerChannel;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use NotificationChannels\Telegram\TelegramChannel;
 use NotificationChannels\Telegram\TelegramMessage;
@@ -37,13 +39,15 @@ class OnDemand extends Notification
      */
     public function via($notifiable)
     {
-        switch ($notifiable->getDefaultRoute()) {
+        switch (optional($notifiable->getDefaultMessenger())->driver) {
             case 'Telegram':
                 $driver = TelegramChannel::class;
                 break;
             case 'Facebook':
                 $driver = FacebookChannel::class;
-                $break;            
+                break;  
+            default:
+                $driver = TwilioChannel::class; 
         }
 
         return [$driver];
@@ -88,6 +92,13 @@ class OnDemand extends Notification
         return FacebookMessage::create()
             ->text($this->content)
             ->notificationType(NotificationType::REGULAR)
+            ;
+    }
+
+    public function toTwilio($notifiable)
+    {
+        return (new TwilioSmsMessage())
+            ->content($this->content)
             ;
     }
 }
