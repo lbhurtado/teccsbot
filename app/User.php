@@ -4,7 +4,7 @@ namespace App;
 
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
-use App\Jobs\{InviteUser, RequestOTP, VerifyOTP};
+use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
@@ -90,6 +90,13 @@ class User extends Authenticatable
     public function invite()
     {
         InviteUser::dispatch($this);
+
+        return $this;
+    }
+
+    public function accepted(User $downline)
+    {
+        SendUserAccceptedNotification::dispatch($this, $downline);
 
         return $this;
     }

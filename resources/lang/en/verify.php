@@ -2,6 +2,6 @@
 
 return [
 	'input' => [
-		'verify' => 'Verify: mobile=:mobile [Yes/No]?',
+		'verify' => 'Verify: name=:name, mobile=:mobile [Yes/No]?',
 	],
 ];

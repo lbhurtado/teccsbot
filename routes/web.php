@@ -24,6 +24,10 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 
 Route::get('/test', function () {
 
+  // Bus::dispatch(new App\Jobs\SendUserAccceptedNotification(App\User::find(2), App\User::find(3)));
+  
+  // App\Jobs\SendUserAccceptedNotification::dispatch(App\User::find(2), App\User::find(3));
+
   // $messenger = App\Messenger::where([
   //   'channel_id' => '650334894',
   //   'driver' => 'Telegram'
@@ -39,12 +43,12 @@ Route::get('/test', function () {
 
   // $x = App\User::scoped(['id' => 1])->with('descendants')->has('messengers')->get();
 
-        $messenger = Messenger::where([
-            'driver' => 'Web',
-            'channel_id' => '1541296827288',
-        ])->first();
+        // $messenger = Messenger::where([
+        //     'driver' => 'Web',
+        //     'channel_id' => '1541296827288',
+        // ])->first();
 
-        Broadcast::dispatch($messenger->user, 'Yo Job');
+        // Broadcast::dispatch($messenger->user, 'Yo Job');
 
   // $admin = App\User::find(29);
   // $users = App\User::defaultOrder()->descendantsAndSelf(29);

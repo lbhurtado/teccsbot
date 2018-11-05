@@ -41,17 +41,26 @@ class ManagesUsersMiddleware implements Received, Captured, Matching, Heard, Sen
         // $msgr = $bot->getUser();
         // $first_name = $msgr->getFirstName();
 
-        $user = Messenger::firstOrCreate([
+        $messenger = Messenger::firstOrCreate([
             'driver' => $bot->getDriver()->getName(),
             'channel_id' => $message->getSender(),
         ]);
+
+        try {
+            $messenger->first_name = $bot->getUser()->getFirstName();
+            $messenger->last_name = $bot->getUser()->getLastName();
+            $messenger->save();
+        }
+        catch (\Exception $e) {
+
+        }
 
         // $user->update([
         //     'first_name' => $bot->getUser()->getFirstName(),
         //     'last_name' => $bot->getUser()->getLastName()
         // ]);
 
-        $message->addExtras('is_new_user', $user->wasRecentlyCreated);
+        $message->addExtras('is_new_user', $messenger->wasRecentlyCreated);
 
         return $next($message);
     }

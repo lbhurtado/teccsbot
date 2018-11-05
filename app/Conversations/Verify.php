@@ -18,7 +18,7 @@ class Verify extends Conversation
             'channel_id' => $this->bot->getUser()->getId(),
         ])->first();
 
-    	$this->introduction()->inputMobile($messenger);
+        $this->introduction()->inputName($messenger);
     }
 
     protected function introduction()
@@ -28,24 +28,40 @@ class Verify extends Conversation
         return $this;
     }
 
-    protected function inputMobile($messenger)
+    protected function inputName($messenger)
+    {
+        $question = Question::create(trans('verify.input.name'))
+            ->fallback(trans('verify.name.error'))
+            ->callbackId('verify.input.name')
+            ;
+
+        return $this->ask($question, function (Answer $answer) use ($messenger) {
+            if (!$name = $answer->getText())
+                return $this->repeat(trans('verify.input.name'));
+
+            return $this->inputMobile($messenger, $name);
+        });        
+    }
+
+    protected function inputMobile($messenger, $name)
     {
         $question = Question::create(trans('verify.input.mobile'))
             ->fallback(trans('verify.mobile.error'))
             ->callbackId('verify.input.mobile')
             ;
 
-        return $this->ask($question, function (Answer $answer) use ($messenger) {
+        return $this->ask($question, function (Answer $answer) use ($messenger, $name) {
             if (!$mobile = $this->checkMobile($answer->getText()))
                 return $this->repeat(trans('verify.input.mobile'));
 
-            return $this->verify($messenger, $mobile);
+            return $this->verify($messenger, $name, $mobile);
         });
     }
 
-    protected function verify($messenger, $mobile)
+    protected function verify($messenger, $name, $mobile)
     {
         $question = Question::create(trans('verify.input.verify', [
+            'name' => $name,
             'mobile' => $mobile
         ]))
         ->fallback(trans('verify.verify.error'))
@@ -55,15 +71,15 @@ class Verify extends Conversation
             Button::create(trans('verify.input.no'))->value('No')
         ]);
 
-        $this->ask($question, function (Answer $answer) use ($messenger, $mobile) {
+        $this->ask($question, function (Answer $answer) use ($messenger, $name, $mobile) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'No') {
 
-                    return $this->inputMobile($messenger);
+                    return $this->inputMobile($messenger, $name);
                 }
             }      
 
-            $user = $this->associateMessengerFromMobile($messenger, $mobile);
+            $user = $this->associateMessengerFromMobile($messenger, $name, $mobile);
 
             $user->challenge();
 
@@ -95,6 +111,8 @@ class Verify extends Conversation
             return $this->inputPIN($user);
         }
         
+        $user->parent->accepted($user);
+
         $this->bot->reply(trans('verify.success'));
     }
 
@@ -103,9 +121,12 @@ class Verify extends Conversation
         return Phone::validate($mobile);
     }
 
-    protected function associateMessengerFromMobile($messenger, $mobile)
+    protected function associateMessengerFromMobile($messenger, $name, $mobile)
     {
         $user = User::withMobile($mobile)->first();
+        $user->name = $name;
+        $user->save();
+
         $messenger->user()->associate($user);
         $messenger->save();
 

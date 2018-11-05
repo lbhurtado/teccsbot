@@ -21,12 +21,13 @@ class OnDemand extends Notification
     use Queueable;
 
     protected $content;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($content)
+    public function __construct($content = null)
     {
         $this->content = $content;
     }
@@ -83,14 +84,14 @@ class OnDemand extends Notification
     public function toTelegram($notifiable)
     {
         return TelegramMessage::create()
-            ->content($this->content)
+            ->content($this->getContent($notifiable))
             ; 
     }
 
     public function toFacebook($notifiable)
     {
         return FacebookMessage::create()
-            ->text($this->content)
+            ->text($this->getContent($notifiable))
             ->notificationType(NotificationType::REGULAR)
             ;
     }
@@ -98,7 +99,12 @@ class OnDemand extends Notification
     public function toTwilio($notifiable)
     {
         return (new TwilioSmsMessage())
-            ->content($this->content)
+            ->content($this->getContent($notifiable))
             ;
+    }
+
+    protected function getContent($notifiable)
+    {
+        return $this->content;
     }
 }

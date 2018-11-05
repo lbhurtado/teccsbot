@@ -44,6 +44,7 @@ class VerifyTest extends TestCase
     {
         \Queue::fake();
 
+        $name = $this->faker->name;
         $mobile = Phone::number('09178251991');
         $authy_id = '106530563';
         $driver = TelegramDriver::DRIVER_NAME;
@@ -60,13 +61,15 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.name'))
+            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
             ->receivesInteractiveMessage($negative)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
             ->receivesInteractiveMessage($affirmative)
             ;
 
@@ -81,6 +84,7 @@ class VerifyTest extends TestCase
 
         // $user->verifiedBy($pin, false); //this is supposed to be here but it doesn't work
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
+        \Queue::assertPushed(\App\Jobs\SendUserAccceptedNotification::class);
 
         $this->bot
             ->assertReply(trans('verify.success'))
@@ -106,6 +110,7 @@ class VerifyTest extends TestCase
     {
         \Queue::fake();
 
+        $name = $this->faker->name;
         $invalid_mobile = '111';
         $mobile = Phone::number('09178251991');
         $authy_id = '106530563';
@@ -124,11 +129,14 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.name'))
+            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($invalid_mobile)
             ->assertReply(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
             ->receivesInteractiveMessage($affirmative)
             ;
 
@@ -142,7 +150,7 @@ class VerifyTest extends TestCase
             ;
 
         \Queue::assertPushed(\App\Jobs\VerifyOTP::class);
-
+        \Queue::assertPushed(\App\Jobs\SendUserAccceptedNotification::class);
         $this->bot
             ->assertReply(trans('verify.success'))
             ;
@@ -153,6 +161,7 @@ class VerifyTest extends TestCase
     {
         \Queue::fake();
 
+        $name = $this->faker->name;
         $mobile = Phone::number('09178251991');
         $authy_id = '106530563';
         $driver = TelegramDriver::DRIVER_NAME;
@@ -170,13 +179,17 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.name'))
+            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
             ->receivesInteractiveMessage($negative)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
+            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
             ->receivesInteractiveMessage($affirmative)
             ;
 
@@ -198,5 +211,6 @@ class VerifyTest extends TestCase
             ->receives($pin)                        
             ->assertReply(trans('verify.success'))
             ;
+        \Queue::assertPushed(\App\Jobs\SendUserAccceptedNotification::class);
     }
 }
