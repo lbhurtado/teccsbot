@@ -6,6 +6,7 @@ use App\{User, Operator, Messenger, Phone};
 use Tests\TestCase;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
+use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VerifyTest extends TestCase
@@ -61,7 +62,8 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
-            ->assertQuestion(trans('verify.input.name'))
+            // ->assertQuestion(trans('verify.input.name', ['name' => $this->messenger->name]))
+            ->assertTemplate(Question::class)
             ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
@@ -129,7 +131,8 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
-            ->assertQuestion(trans('verify.input.name'))
+            // ->assertQuestion(trans('verify.input.name', ['name' => $this->messenger->name]))
+            ->assertTemplate(Question::class)
             ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($invalid_mobile)
@@ -179,7 +182,13 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
-            ->assertQuestion(trans('verify.input.name'))
+            ;
+
+        $this->messenger->refresh;
+
+        $this->bot
+            // ->assertQuestion(trans('verify.input.name', ['name' => $this->bot->getUser()->getFirstName()]))
+            ->assertTemplate(Question::class)
             ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)

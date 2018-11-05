@@ -47,6 +47,11 @@ class Messenger extends Model
         return $query->where('wants_notifications', true);
     }
 
+    public function getNameAttribute()
+    {
+        return trim(ucfirst($this->first_name . ' ' . $this->last_name));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

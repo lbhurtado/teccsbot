@@ -37,14 +37,13 @@ class Verify extends Conversation
 
     protected function inputName($messenger)
     {
-        $question = Question::create(trans('verify.input.name'))
+        $question = Question::create(trans('verify.input.name', ['name' => $messenger->name]))
             ->fallback(trans('verify.name.error'))
             ->callbackId('verify.input.name')
             ;
 
         return $this->ask($question, function (Answer $answer) use ($messenger) {
-            if (!$name = $answer->getText())
-                return $this->repeat(trans('verify.input.name'));
+            $name = $answer->getText() ?? $messenger->name;
 
             return $this->inputMobile($messenger, $name);
         });        
@@ -78,7 +77,7 @@ class Verify extends Conversation
             Button::create(trans('verify.input.no'))->value('No')
         ]);
 
-        $this->ask($question, function (Answer $answer) use ($messenger, $name, $mobile) {
+        return $this->ask($question, function (Answer $answer) use ($messenger, $name, $mobile) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'No') {
 
