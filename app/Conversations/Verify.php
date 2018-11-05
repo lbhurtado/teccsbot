@@ -37,16 +37,19 @@ class Verify extends Conversation
 
     protected function inputName($messenger)
     {
-        $question = Question::create(trans('verify.input.name', ['name' => $messenger->name]))
-            ->fallback(trans('verify.name.error'))
-            ->callbackId('verify.input.name')
-            ;
+        // $question = Question::create(trans('verify.input.name', ['name' => $messenger->name]))
+        //     ->fallback(trans('verify.name.error'))
+        //     ->callbackId('verify.input.name')
+        //     ;
 
-        return $this->ask($question, function (Answer $answer) use ($messenger) {
-            $name = $answer->getText() ?? $messenger->name;
+        // return $this->ask($question, function (Answer $answer) use ($messenger) {
+        //     $name = $answer->getText() ?? $messenger->name;
 
-            return $this->inputMobile($messenger, $name);
-        });        
+        //     return $this->inputMobile($messenger, $name);
+        // }); 
+        $name = $messenger->name;
+
+        return $this->inputMobile($messenger, $name);     
     }
 
     protected function inputMobile($messenger, $name)

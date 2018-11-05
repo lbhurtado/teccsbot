@@ -62,16 +62,13 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
-            // ->assertQuestion(trans('verify.input.name', ['name' => $this->messenger->name]))
-            ->assertTemplate(Question::class)
-            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
+            ->assertTemplate(Question::class)
             ->receivesInteractiveMessage($negative)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
+            ->assertTemplate(Question::class)
             ->receivesInteractiveMessage($affirmative)
             ;
 
@@ -131,15 +128,11 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
-            // ->assertQuestion(trans('verify.input.name', ['name' => $this->messenger->name]))
-            ->assertTemplate(Question::class)
-            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($invalid_mobile)
             ->assertReply(trans('verify.input.mobile'))
             ->receives($mobile)
-            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
-            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
+            ->assertTemplate(Question::class)
             ->receivesInteractiveMessage($affirmative)
             ;
 
@@ -187,18 +180,13 @@ class VerifyTest extends TestCase
         $this->messenger->refresh;
 
         $this->bot
-            // ->assertQuestion(trans('verify.input.name', ['name' => $this->bot->getUser()->getFirstName()]))
-            ->assertTemplate(Question::class)
-            ->receives($name)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
-            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
+            ->assertTemplate(Question::class)
             ->receivesInteractiveMessage($negative)
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
-            // ->assertQuestion(trans('verify.input.verify', compact('mobile')))
-            ->assertQuestion(trans('verify.input.verify', compact('name', 'mobile')))
+            ->assertTemplate(Question::class)
             ->receivesInteractiveMessage($affirmative)
             ;
 
