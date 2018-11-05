@@ -18,6 +18,13 @@ class Verify extends Conversation
             'channel_id' => $this->bot->getUser()->getId(),
         ])->first();
 
+        $messenger->update([
+            'first_name' => $this->bot->getUser()->getFirstName(),
+            'last_name' => $this->bot->getUser()->getLastName()
+        ]);
+
+        $messenger->save();
+
         $this->introduction()->inputName($messenger);
     }
 
