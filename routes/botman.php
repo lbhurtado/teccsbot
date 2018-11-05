@@ -36,6 +36,10 @@ $botman->hears('/invite', function (BotMan $bot) {
     $bot->startConversation(new Invite());
 })->stopsConversation();
 
+$botman->hears('/start|GET_STARTED', function (BotMan $bot) {
+    $bot->startConversation(new Verify());
+})->stopsConversation();
+
 $botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
     $bot->startConversation(new Verify());
 })->stopsConversation();
@@ -54,7 +58,7 @@ $botman->hears('/traverse', UserController::class.'@traverse');
 
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user')) {
-        return $bot->startConversation(new Onboarding);
+        return $bot->startConversation(new Onboarding());
     }
 
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
