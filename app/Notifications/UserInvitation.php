@@ -79,9 +79,10 @@ class UserInvitation extends Notification
     public function toTwilio($notifiable)
     {
         $url = $this->getURL($notifiable);
+        $name = $notifiable->parent->name;
 
         return (new TwilioSmsMessage())
-            ->content(trans('invite.notification',compact('url')))
+            ->content(trans('invite.notification', compact('url', 'name')))
             // ->from('+13104992907')
             // ->from('MG6cfe25a8cfc5287e5a66055556bfe930')
             ;
