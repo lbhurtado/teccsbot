@@ -82,28 +82,33 @@ class Invite extends Conversation
         ->fallback(trans('invite.verify.error'))
         ->callbackId('invite_verify')
         ->addButtons([
-            Button::create(trans('invite.input.yes'))->value('Yes'),
+            Button::create(trans('invite.input.telegram'))->value('Telegram'),
+            Button::create(trans('invite.input.facebook'))->value('Facebook'),
             Button::create(trans('invite.input.no'))->value('No')
         ]);
 
         $this->ask($question, function (Answer $answer) {
+            $driver = 'Facebook';
+
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'No') {
 
                     return $this->inputCode();
                 }
+
+                $driver = $answer->getValue();
             }      
 
-            return $this->process();
+            return $this->process($driver);
         });
     }
 
-    protected function process()
+    protected function process($driver)
     {
         $this->bot->reply(trans('invite.processing'));
 
     	if ($user = User::seed($this->getCode(), $this->getMobile(), $this->getUser())) {
-    		$user->invite();
+    		$user->invite($driver);
             $this->bot->reply(trans('invite.sent'));
     	}
         else

@@ -13,14 +13,16 @@ class UserInvitation extends Notification
 {
     use Queueable;
 
+    protected $driver;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($driver)
     {
-        //
+        $this->driver = $driver;
     }
 
     /**
@@ -78,11 +80,11 @@ class UserInvitation extends Notification
 
     public function toTwilio($notifiable)
     {
-        $url = $this->getURL($notifiable);
         $name = $notifiable->parent->name;
+        $url = $this->getURL($notifiable);
 
         return (new TwilioSmsMessage())
-            ->content(trans('invite.notification', compact('url', 'name')))
+            ->content(trans('invite.notification', compact('name', 'url')))
             // ->from('+13104992907')
             // ->from('MG6cfe25a8cfc5287e5a66055556bfe930')
             ;
@@ -90,8 +92,10 @@ class UserInvitation extends Notification
 
     protected function getURL($notifiable)
     {
-        return (optional($notifiable->getDefaultMessenger())->driver == 'Telegram') 
-                ? 'http://t.me/grassroots_bot'
-                : 'http://m.me/dyagwarbot';
+        return config('chatbot.links.messenger')[in_array($this->driver, ['Telegram', 'Facebook']) ? $this->driver : 'Facebook'];
+
+        // return (optional($notifiable->getDefaultMessenger())->driver == 'Telegram') 
+        //         ? 'http://t.me/grassroots_bot'
+        //         : 'http://m.me/dyagwarbot';
     }
 }

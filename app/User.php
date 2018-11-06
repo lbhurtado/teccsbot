@@ -87,9 +87,9 @@ class User extends Authenticatable
         return $this->messengers()->whereIn('driver',['Telegram','Facebook'])->first();
     }
 
-    public function invite()
+    public function invite($driver)
     {
-        InviteUser::dispatch($this);
+        InviteUser::dispatch($this, $driver);
 
         return $this;
     }

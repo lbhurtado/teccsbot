@@ -15,14 +15,18 @@ class InviteUser implements ShouldQueue
 
     protected $user;
 
+    protected $driver;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user, $driver)
     {
         $this->user = $user;
+
+        $this->driver = $driver;
     }
 
     /**
@@ -32,6 +36,6 @@ class InviteUser implements ShouldQueue
      */
     public function handle()
     {
-        $this->user->notify(new UserInvitation());
+        $this->user->notify(new UserInvitation($this->driver));
     }
 }
