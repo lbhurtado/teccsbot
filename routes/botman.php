@@ -56,6 +56,10 @@ $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 
 $botman->hears('/traverse', UserController::class.'@traverse');
 
+//needs testing :-)
+$botman->hears('\${key}\s*=\s*{value}', UserController::class.'@set');
+$botman->hears('\${key}', UserController::class.'@get');
+
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user')) {
         return $bot->startConversation(new Onboarding());

@@ -4,11 +4,12 @@ namespace App;
 
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
-use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
+use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
 
 class User extends Authenticatable
 {
@@ -34,6 +35,10 @@ class User extends Authenticatable
         'created_at', 'updated_at', 'verified_at'
     ];
 
+    public $casts = [
+        'extra_attributes' => 'array',
+    ];
+    
     protected $hidden = [
         'password', 'remember_token',
     ];
@@ -185,5 +190,15 @@ class User extends Authenticatable
     public function canReceiveAlphanumericSender()
     {
         return true;   
+    }
+
+    public function getExtraAttributesAttribute(): SchemalessAttributes
+    {
+       return SchemalessAttributes::createForModel($this, 'extra_attributes');
+    }
+
+    public function scopeWithExtraAttributes(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('extra_attributes');
     }
 }

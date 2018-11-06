@@ -79,4 +79,34 @@ class UserController extends Controller
 
         $bot->reply('Traversed.');
     }
+
+    public function set(BotMan $bot, $key, $value)
+    {
+        $key = trim($key);
+        $value = trim($value);
+
+        $messenger = $this->getMessenger($bot);
+        $messenger->user->extra_attributes->set($key, $value);
+        $messenger->user->save();
+
+        $bot->reply("Updated:  $key = $value");
+    }
+
+    public function get(BotMan $bot, $key)
+    {
+        $key = trim($key);
+
+        $messenger = $this->getMessenger($bot);
+        $value = $messenger->user->extra_attributes->get($key);
+
+        $bot->reply("Retrieved:  $key = $value");
+    }
+
+    protected function getMessenger(BotMan $bot)
+    {
+        return Messenger::where([
+            'driver' => $bot->getDriver()->getName(),
+            'channel_id' => $bot->getUser()->getId(),
+        ])->first();
+    }
 }
