@@ -10,7 +10,7 @@ use App\Jobs\{RequestOTP, VerifyOTP, SendBotmanMessage, Broadcast};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use App\{Register, Placement, Messenger, User};
+use App\{Register, Placement, Messenger, User, Attributes};
 
 class UserController extends Controller
 {
@@ -83,14 +83,15 @@ class UserController extends Controller
     public function set(BotMan $bot, $query_string)
     {
         parse_str($query_string, $associative_array);
+        $filtered_associative_array = Attributes::filter($associative_array);
 
-        $messenger = $this->getMessenger($bot);
-        foreach ($associative_array as $key => $value) {
-            $messenger->user->extra_attributes->set($key, $value);
-        }
-        $messenger->user->save();
+        tap($this->getMessenger($bot)->user, function ($user) use ($filtered_associative_array) {
+            foreach ($filtered_associative_array as $key => $value) {
+                $user->extra_attributes->set($key, $value);
+            }
+        })->save();
 
-        $attributes = http_build_query($associative_array);
+        $attributes = http_build_query($filtered_associative_array);
         $bot->reply(trans('attributes.set', compact('attributes')));
     }
 
@@ -112,5 +113,4 @@ class UserController extends Controller
             'channel_id' => $bot->getUser()->getId(),
         ])->first();
     }
-
 }

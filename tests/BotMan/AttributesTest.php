@@ -42,12 +42,12 @@ class AttributesTest extends TestCase
     /** @test */
     function user_can_assign_values_arbitrarily()
     {
-        $query_string = "abc=123&def=456";
+        $query_string = "age=21&gender=male&hair=red&status=married";
         $set_keyword = "?$query_string";
         parse_str($query_string, $associative_array);
         $attributes = http_build_query($associative_array);
-        $var = "abc";
-        $attribute = http_build_query(['abc' => '123']);
+        $var = "gender";
+        $attribute = http_build_query(['gender' => 'male']);
         $get_keyword = "\$$var";
         $this->bot
             ->setUser(['id' => $this->channel_id])
