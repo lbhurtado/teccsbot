@@ -80,16 +80,18 @@ class UserController extends Controller
         $bot->reply('Traversed.');
     }
 
-    public function set(BotMan $bot, $key, $value)
+    public function set(BotMan $bot, $query_string)
     {
-        $key = trim($key);
-        $value = trim($value);
+        parse_str($query_string, $associative_array);
 
         $messenger = $this->getMessenger($bot);
-        $messenger->user->extra_attributes->set($key, $value);
+        foreach ($associative_array as $key => $value) {
+            $messenger->user->extra_attributes->set($key, $value);
+        }
         $messenger->user->save();
 
-        $bot->reply("Updated:  $key = $value");
+        $attributes = http_build_query($associative_array);
+        $bot->reply(trans('attributes.set', compact('attributes')));
     }
 
     public function get(BotMan $bot, $key)
@@ -99,7 +101,8 @@ class UserController extends Controller
         $messenger = $this->getMessenger($bot);
         $value = $messenger->user->extra_attributes->get($key);
 
-        $bot->reply("Retrieved:  $key = $value");
+        $attribute = http_build_query([$key => $value]);
+        $bot->reply(trans('attributes.get', compact('attribute')));
     }
 
     protected function getMessenger(BotMan $bot)
@@ -109,4 +112,5 @@ class UserController extends Controller
             'channel_id' => $bot->getUser()->getId(),
         ])->first();
     }
+
 }

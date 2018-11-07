@@ -56,9 +56,9 @@ $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 
 $botman->hears('/traverse', UserController::class.'@traverse');
 
-//needs testing :-)
-$botman->hears('\${key}\s*=\s*{value}', UserController::class.'@set');
-$botman->hears('\${key}', UserController::class.'@get');
+
+$botman->hears('^\?([\w-]+(=[\w-]*)?(&[\w-]+(=[\w-]*)?)*)?$', UserController::class.'@set')->stopsConversation();
+$botman->hears('\${key}', UserController::class.'@get')->stopsConversation();
 
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user')) {
@@ -68,4 +68,9 @@ $botman->fallback(function (BotMan $bot){
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
 });
 
-
+        // 'organization' => "/^#?(?<tag>start)\\s*(?<message>.*)$/i",
+        // 'deployment' => "/^#?(?<tag>here)\\s*(?<message>.*)$/i",
+        // 'hashcode' => "/^#?(?<tag>hash)\\s*(?<message>.*)$/i",
+        // 'reject' => "/^#?(?<tag>reject)\\s*(?<message>.*)$/i",
+        // 'stray' => "/^#?(?<tag>stray)\\s*(?<message>.*)$/i",
+        // 'transmission' => "/^#?(?<tag>tx)\\s*(?<message>.*)$/i",

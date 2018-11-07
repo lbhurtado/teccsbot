@@ -38,4 +38,22 @@ class UserTest extends TestCase
             $this->assertInstanceOf($class, $user);
     	}
     }
+
+    /** @test */
+    function user_has_schemaless_atttributes()
+    {
+        $key = 'color';
+        $value = 'blue';
+
+        $user = factory(\App\User::class)->create();
+
+        $user->extra_attributes->set($key, $value);
+        $user->save();
+
+        $this->assertEquals($user->extra_attributes->get($key), $value);
+        $this->assertDatabaseHas('users', [
+            'extra_attributes' => json_encode([$key => $value]),
+        ]);
+
+    }
 }
