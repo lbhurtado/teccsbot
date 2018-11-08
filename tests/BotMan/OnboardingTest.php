@@ -13,7 +13,7 @@ class OnboardingTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    private $keyword;
+    private $keyword = '/start';
 
     private $driver;
 
@@ -56,7 +56,7 @@ class OnboardingTest extends TestCase
             ->receives($this->keyword)
             ->assertReply(trans('onboarding.welcome', ['name' => config('app.name')]))
             ->assertTemplate(Question::class)
-            ->receives('Yes')
+            ->receives('yes')
             ;
 
         $this->assertDatabaseHas('messengers', [
@@ -75,7 +75,7 @@ class OnboardingTest extends TestCase
             ->receives($this->keyword)
             ->assertReply(trans('onboarding.welcome', ['name' => config('app.name')]))
             ->assertTemplate(Question::class)
-            ->receives('No')
+            ->receives('no')
             ;
 
         $this->assertDatabaseHas('messengers', [

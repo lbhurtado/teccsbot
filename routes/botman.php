@@ -37,7 +37,7 @@ $botman->hears('/invite', function (BotMan $bot) {
 })->stopsConversation();
 
 $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
-    $bot->startConversation(new Verify());
+    $bot->startConversation(new Onboarding());
 })->stopsConversation();
 
 $botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
