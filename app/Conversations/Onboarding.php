@@ -10,17 +10,23 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 
 class Onboarding extends Conversation
 {
+    protected $messenger;
+
     public function run()
     {
-        $this->provideGreeting();
+        $this->messenger = Messenger::where([
+            'driver' => $this->bot->getDriver()->getName(),
+            'channel_id' => $this->bot->getUser()->getId(),
+        ])->first();
+
+        $this->welcome()->askToStayUpdated();
     }
 
-    public function provideGreeting()
+    public function welcome()
     {
         $this->bot->reply(trans('onboarding.welcome', ['name' => config('app.name')]));
-        sleep(2);
 
-        $this->askToStayUpdated();
+        return $this;
     }
 
     public function askToStayUpdated()

@@ -57,8 +57,12 @@ $botman->hears('/broadcast {message}', UserController::class.'@broadcast');
 $botman->hears('/traverse', UserController::class.'@traverse');
 
 
-$botman->hears('^\?([\w-]+(=[\w-]*)?(&[\w-]+(=[\w-]*)?)*)?$', UserController::class.'@set')->stopsConversation();
-$botman->hears('\${key}', UserController::class.'@get')->stopsConversation();
+$botman->hears('^\?([\w-]+(=[\w-]*)?(&[\w-]+(=[\w-]*)?)*)?$', UserController::class.'@set');
+$botman->hears('\${key}', UserController::class.'@get');
+
+$botman->hears('#?(here|start|hash|reject|stray|tx)\s*(.*)', UserController::class.'@tag');
+
+$botman->hears('#?(strength|alert|execute|survey)\s*(.*)', UserController::class.'@dashboard');
 
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user')) {
@@ -68,9 +72,31 @@ $botman->fallback(function (BotMan $bot){
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
 });
 
+
+# preg_match('/^\/?(?<tag>start|here)\s*(?<message>.*)$/i', $input_line, $output_array);
+
         // 'organization' => "/^#?(?<tag>start)\\s*(?<message>.*)$/i",
         // 'deployment' => "/^#?(?<tag>here)\\s*(?<message>.*)$/i",
         // 'hashcode' => "/^#?(?<tag>hash)\\s*(?<message>.*)$/i",
         // 'reject' => "/^#?(?<tag>reject)\\s*(?<message>.*)$/i",
         // 'stray' => "/^#?(?<tag>stray)\\s*(?<message>.*)$/i",
         // 'transmission' => "/^#?(?<tag>tx)\\s*(?<message>.*)$/i",
+
+
+// • access FAQ details like transportation, speakers, and spon- sors
+// • send push notifications for news/schedule changes
+// • receive discounts/vouchers from sponsors
+// • assemble your schedule
+// • leave speaker feedback
+// • connect attendees
+
+// • it onboards new users
+// • it asks the user about the notification subscription
+// • it lets the user subscribe and unsubscribe from a subscrip- tion at any time
+// • it can send notifications
+// • it understands and replies to the main FAQs (location, date, speakers, etc.)
+// Let’s Build a Conference Chatbot for Laracon EU 107
+// • it provides a menu for Facebook Messenger
+// • it provides commands for Telegram
+// • it uses custom templates for Facebook Messenger
+// • has a backend which helps with sending out notifications

@@ -7,17 +7,17 @@ use App\Jobs\VerifyOTP;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Conversations\Conversation;
 
-class Verify extends Conversation
+class Verify extends BaseConversation
 {
     public function run()
     {
-        $messenger = Messenger::where([
-            'driver' => $this->bot->getDriver()->getName(),
-            'channel_id' => $this->bot->getUser()->getId(),
-        ])->first();
+        // $messenger = Messenger::where([
+        //     'driver' => $this->bot->getDriver()->getName(),
+        //     'channel_id' => $this->bot->getUser()->getId(),
+        // ])->first();
 
+        $messenger = $this->getMessenger();
         $messenger->update([
             'first_name' => $this->bot->getUser()->getFirstName(),
             'last_name' => $this->bot->getUser()->getLastName()

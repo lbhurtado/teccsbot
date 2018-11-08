@@ -3,27 +3,19 @@
 namespace App\Conversations;
 
 use App\Enum\Role;
-use App\{User, Placement, Phone, Messenger};
+use App\{User, Phone};
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Conversations\Conversation;
 
-class Invite extends Conversation
+class Invite extends BaseConversation
 {
 	protected $code;
 
 	protected $mobile;
 
-	protected $messenger;
-
     public function run()
     {
-        $this->messenger = Messenger::where([
-            'driver' => $this->bot->getDriver()->getName(),
-            'channel_id' => $this->bot->getUser()->getId(),
-        ])->first();
-
         $this->introduction()->inputCode();
     }
 
@@ -145,10 +137,5 @@ class Invite extends Conversation
     protected function getMobile()
     {
         return $this->mobile;
-    }
-
-    protected function getUser()
-    {
-        return $this->messenger->user;
     }
 }

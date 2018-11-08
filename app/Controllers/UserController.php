@@ -106,6 +106,11 @@ class UserController extends Controller
         $bot->reply(trans('attributes.get', compact('attribute')));
     }
 
+    public function tag(BotMan $bot, $tag, $message)
+    {
+        $bot->reply($tag . ' ' . $message);   
+    }
+
     protected function getMessenger(BotMan $bot)
     {
         return Messenger::where([

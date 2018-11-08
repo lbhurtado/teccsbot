@@ -13,6 +13,32 @@ class Messenger extends Model
         'driver', 'channel_id', 'first_name', 'last_name', 'wants_notifications',
     ];
 
+    public static function instance($driver, $channel_id)
+    {
+        return app(Messenger::class)->getInstance($driver, $channel_id);
+    }
+
+
+    public function getInstance($driver, $channel_id)
+    {
+        static $instance = null;
+
+        if (null === $instance) {
+            $instance = static::where(compact('driver', 'channel_id'))->first();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Private clone method to prevent cloning of the instance of the
+     * *Singleton* instance.
+     * https://laravel-taiwan.github.io/php-the-right-way/pages/Design-Patterns.html
+     *
+     * @return void
+     */
+    private function __clone(){}
+
     public function getDriverClass()
     {
         $driverClass = '';

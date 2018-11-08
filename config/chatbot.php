@@ -19,4 +19,18 @@ return [
         'education' => 'in:elementary,high-school,college,post-grad',
         'zip' => 'digits:4',
     ],
+    'keywords' => [
+        'subscriber' => [
+        ],
+        'watcher' => [
+        ],
+        'worker' => [
+        ],
+        'operator' => [
+        ],
+        'staff' => [
+        ],
+        'admin' => [
+        ],
+    ],
 ];
