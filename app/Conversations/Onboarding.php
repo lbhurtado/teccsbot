@@ -24,42 +24,39 @@ class Onboarding extends BaseConversation
 
     protected function askToStayUpdated()
     {
-        $question = Question::create(trans('onboarding.stay_updated', [
+        $question = Question::create(trans('onboarding.stay_updated.question', [
             'name' => config('app.name')
         ]))
         ->fallback(trans('onboarding.stay_updated.error'))
-        ->callbackId('onboarding.sentinel.stay_updated')
+        ->callbackId('onboarding.stay_updated')
         ->addButtons([
-            Button::create(trans('onboarding.input.yes'))->value('yes'),
-            Button::create(trans('onboarding.input.no'))->value('no')
+            Button::create(trans('onboarding.stay_updated.input.yes'))->value('yes'),
+            Button::create(trans('onboarding.stay_updated.input.no'))->value('no')
         ]);
 
         $this->ask($question, function (Answer $answer) {
             switch ($answer->getText()) {
                 case 'no':
                     // Subscriber::deleteUserIfGiven($this->bot->getUser()->getId());
-                    $this->say('Ok, no problem.');
+                    $this->say(trans('onboarding.stay_updated.answer.no'));
 
-                    return $this->showGeneralInfo();
+                    return $this->showInfo();
                 case 'yes':
                     // Subscriber::storeFromBotManUser($this->bot->getDriver()->getName(), $this->bot->getUser());
                     $this->getMessenger()->turnOnNotifications();
-                    $this->say('Perfect 👍');
+                    $this->say(trans('onboarding.stay_updated.answer.yes'));
 
-                    return $this->showGeneralInfo();
+                    return $this->showInfo();
                 default:
-                    $this->say('I am not sure what you meant. Can you try again?');
+                    $this->say(trans('onboarding.stay_updated.answer.duh'));
 
                     return $this->repeat();
             }
         });
     }
 
-    protected function showGeneralInfo()
+    protected function showInfo()
     {
-        $this->say("These are some examples sentences that you can use:\n
-        - \"Show me the speakers.\"
-        - \"Who is sponsoring this year?\"
-        ");
+        $this->say(trans('onboarding.info'));
     }
 }

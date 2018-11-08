@@ -43,25 +43,27 @@ class OnboardingTest extends TestCase
 
         $this->assertDatabaseHas('messengers', [
             'channel_id' => $this->channel_id,
-            'driver' => TelegramDriver::DRIVER_NAME,
+            'driver' => $this->driver,
         ]);
     }
 
     /** @test */
     public function a_new_user_who_wants_to_stay_updated_should_be_flagged_as_such()
     {
+        $affirmative = 'yes';
+
         $this->bot
             ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('onboarding.welcome', ['name' => config('app.name')]))
-            ->assertTemplate(Question::class)
-            ->receives('yes')
+            ->assertQuestion(trans('onboarding.stay_updated.question',['name' => config('app.name')]))
+            ->receivesInteractiveMessage($affirmative)
             ;
 
         $this->assertDatabaseHas('messengers', [
             'channel_id' => $this->channel_id,
-            'driver' => TelegramDriver::DRIVER_NAME,
+            'driver' => $this->driver,
             'wants_notifications' => true
         ]);
     }
@@ -69,18 +71,20 @@ class OnboardingTest extends TestCase
     /** @test */
     public function a_new_user_who_does_not_want_to_stay_updated_should_be_flagged_as_such()
     {
+        $negative = 'no';
+
         $this->bot
             ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('onboarding.welcome', ['name' => config('app.name')]))
-            ->assertTemplate(Question::class)
-            ->receives('no')
+            ->assertQuestion(trans('onboarding.stay_updated.question',['name' => config('app.name')]))
+            ->receivesInteractiveMessage($negative)
             ;
 
         $this->assertDatabaseHas('messengers', [
             'channel_id' => $this->channel_id,
-            'driver' => TelegramDriver::DRIVER_NAME,
+            'driver' => $this->driver,
             'wants_notifications' => false
         ]);
     }
@@ -90,7 +94,7 @@ class OnboardingTest extends TestCase
     {
         factory(Messenger::class)->create([
             'channel_id' => $this->channel_id,
-            'driver' => TelegramDriver::DRIVER_NAME,
+            'driver' => $this->driver,
         ]);
 
         $this->bot
