@@ -54,6 +54,19 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', [
             'extra_attributes' => json_encode([$key => $value]),
         ]);
+    }
 
+    /** @test */
+    function user_has_status()
+    {
+        $name = 'check';
+        $reason = 'test';
+        $model_type = \App\User::class;
+        $user = factory($model_type)->create();
+        $model_id = $user->id;
+        $user->setStatus($name, $reason);
+
+        $this->assertEquals($user->status, $name);
+        $this->assertDatabaseHas('statuses', compact('name', 'reason', 'model_type', 'model_id'));
     }
 }

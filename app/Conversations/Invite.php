@@ -99,8 +99,10 @@ class Invite extends BaseConversation
     {
         $this->bot->reply(trans('invite.processing'));
 
+        //change seed to invite in the future
     	if ($user = User::seed($this->getCode(), $this->getMobile(), $this->getUser())) {
     		$user->invite($driver);
+            $this->getMessenger()->setStatus('invited', trans('invite.reason'));
             $this->bot->reply(trans('invite.sent'));
     	}
         else

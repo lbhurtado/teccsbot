@@ -106,6 +106,20 @@ class UserController extends Controller
         $bot->reply(trans('attributes.get', compact('attribute')));
     }
 
+    public function setStatus(BotMan $bot, $status, $reason = null)
+    {
+        $reason = preg_replace('/[^ \w]+/', '', $reason);
+        $this->getMessenger($bot)->user->setStatus($status, $reason);
+        $bot->reply(trans('status.set', compact('status', 'reason')));
+    }
+
+    public function getStatus(BotMan $bot)
+    {
+        $status = $this->getMessenger($bot)->user->status;
+        $reason = $this->getMessenger($bot)->user->status()->reason;
+        $bot->reply(trans('status.get', compact('status', 'reason')));
+    }
+
     public function tag(BotMan $bot, $tag, $message)
     {
         $bot->reply($tag . ' ' . $message);   

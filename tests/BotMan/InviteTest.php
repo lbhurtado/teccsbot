@@ -65,6 +65,7 @@ class InviteTest extends TestCase
             ->assertReply(trans('invite.sent'))
             ;
 
+        $this->assertEquals('invited', $this->messenger->status);
         $this->assertDatabaseHas('users', ['mobile' => $mobile, 'type' => User::$classes[$code]]);
 
         \Queue::assertPushed(\App\Jobs\InviteUser::class);

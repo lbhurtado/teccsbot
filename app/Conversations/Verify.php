@@ -112,6 +112,8 @@ class Verify extends BaseConversation
         
         $user->parent->accepted($user);
 
+        $this->getMessenger()->setStatus('accepted', trans('verify.reason'));
+        // $user->setStatus('accepted', trans('verify.reason'));
         $this->bot->reply(trans('verify.success'));
         $this->bot->reply(trans('verify.continue'));
     }

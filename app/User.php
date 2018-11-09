@@ -11,6 +11,8 @@ use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
 
+use Spatie\ModelStatus\HasStatuses;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -18,6 +20,7 @@ class User extends Authenticatable
     use HasRoles;
     use IsObservable;
     use NodeTrait;
+    use HasStatuses;
     
     public static $classes = [
         'admin'      => Admin::class,

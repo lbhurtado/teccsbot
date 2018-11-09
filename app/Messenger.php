@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Model;
 use BotMan\Drivers\Facebook\WebDriver;
 use BotMan\Drivers\Telegram\TelegramDriver;
@@ -9,6 +10,8 @@ use BotMan\Drivers\Facebook\FacebookDriver;
 
 class Messenger extends Model
 {
+    use HasStatuses;
+    
     protected $fillable = [
         'driver', 'channel_id', 'first_name', 'last_name', 'wants_notifications',
     ];

@@ -60,9 +60,12 @@ $botman->hears('/traverse', UserController::class.'@traverse');
 $botman->hears('^\?([\w-]+(=[\w-]*)?(&[\w-]+(=[\w-]*)?)*)?$', UserController::class.'@set');
 $botman->hears('\${key}', UserController::class.'@get');
 
-$botman->hears('#?(here|start|hash|reject|stray|tx)\s*(.*)', UserController::class.'@tag');
+$botman->hears('^#status\s(\w+)(?:\s*[-:|]\s*(.*))?$', UserController::class.'@setStatus');
+$botman->hears('^#status$', UserController::class.'@getStatus');
 
-$botman->hears('#?(strength|alert|execute|survey)\s*(.*)', UserController::class.'@dashboard');
+$botman->hears('#(here|start|hash|reject|stray|tx)\s*(.*)', UserController::class.'@tag');
+
+$botman->hears('#(strength|alert|execute|survey)\s*(.*)', UserController::class.'@dashboard');
 
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user')) {
