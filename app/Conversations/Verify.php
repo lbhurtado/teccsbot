@@ -12,11 +12,6 @@ class Verify extends BaseConversation
 {
     public function run()
     {
-        // $messenger = Messenger::where([
-        //     'driver' => $this->bot->getDriver()->getName(),
-        //     'channel_id' => $this->bot->getUser()->getId(),
-        // ])->first();
-
         $messenger = $this->getMessenger();
         $messenger->update([
             'first_name' => $this->bot->getUser()->getFirstName(),
