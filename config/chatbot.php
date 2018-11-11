@@ -33,4 +33,38 @@ return [
         'admin' => [
         ],
     ],
+    'tasks' => [
+        'test' => [
+            ['title' => 'Task 1'],
+            ['title' => 'Task 2'],
+            ['title' => 'Task 3'],
+        ],
+        'admin' => [
+            ['title' => 'Activity - Recruit 15 operators'],
+        ],
+        'operator' => [
+            ['title' => 'Activity - Read the manual'],
+            ['title' => 'Activity - Recruit 15 workers'],
+            ['title' => 'Activity - Recruit 15 staff'],
+        ],
+        'staff' => [
+            ['title' => 'Activity - Read the manual'],
+            ['title' => 'Activity - Recruit 15 voters'],
+        ],
+        'subscriber' => [
+            ['title' => 'Activity - Read the manual'],
+            ['title' => 'Activity - Recruit 15 voters'],
+        ],
+        'worker' => [
+            ['title' => 'Activity - Read the manual'],
+            ['title' => 'Activity - Register'],
+            ['title' => 'Activity - Verify BEI Composition'],
+            ['title' => 'Witness - Ballot Box Seal'],
+            ['title' => 'Witness - Zero Votes Print-Out'],
+            ['title' => 'Activity - Vote'],
+            ['title' => 'Witness - Election Return Print-Out'],
+            ['title' => 'Witness - Election Return Trasmission'],
+            ['title' => 'Activity - Poll Count'],
+        ],
+    ],
 ];

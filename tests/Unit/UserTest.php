@@ -69,4 +69,27 @@ class UserTest extends TestCase
         $this->assertEquals($user->status, $name);
         $this->assertDatabaseHas('statuses', compact('name', 'reason', 'model_type', 'model_id'));
     }
+
+    /** @test */
+    function user_has_tasks()
+    {
+        $user = factory(\App\User::class)->create();
+
+        $user->syncTasks(config('chatbot.tasks.test'));
+
+        $this->assertDatabaseHas('tasks', [
+            'title' => 'Task 1',
+            'user_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'title' => 'Task 2',
+            'user_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'title' => 'Task 3',
+            'user_id' => $user->id,
+        ]);
+    }    
 }

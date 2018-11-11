@@ -4,14 +4,13 @@ namespace App;
 
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
+use Spatie\ModelStatus\HasStatuses;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
-
-use Spatie\ModelStatus\HasStatuses;
 
 class User extends Authenticatable
 {
@@ -155,6 +154,15 @@ class User extends Authenticatable
         return $this;
     }
 
+    public function syncTasks($task_titles_array)
+    {
+        $this->tasks()->delete();
+        if (! empty($task_titles_array))
+            $this->tasks()->createMany($task_titles_array);
+
+        return $this;
+    }
+
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = Phone::number($value);
@@ -178,6 +186,11 @@ class User extends Authenticatable
     public function placements()
     {
         return $this->hasMany(Placement::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     public function scopeWithMobile($query, $value)

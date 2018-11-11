@@ -4,7 +4,7 @@ use BotMan\BotMan\BotMan;
 
 use App\Controllers\UserController;
 use BotMan\BotMan\Middleware\ApiAi;
-use App\Conversations\{SignUp, Verify, Onboarding, Invite, Status};
+use App\Conversations\{SignUp, Verify, Onboarding, Invite, Status, Tasking};
 use BotMan\BotMan\Middleware\Dialogflow;
 use App\Http\Controllers\BotManController;
 use App\Http\Middleware\ManagesUsersMiddleware;
@@ -46,6 +46,10 @@ $botman->hears('/verify|VERIFY_MOBILE', function (BotMan $bot) {
 
 $botman->hears('/status', function (BotMan $bot) {
     $bot->startConversation(new Status());
+})->stopsConversation();
+
+$botman->hears('/task', function (BotMan $bot) {
+    $bot->startConversation(new Tasking());
 })->stopsConversation();
 
 $botman->hears('/signup|SIGN_UP', function (BotMan $bot) {

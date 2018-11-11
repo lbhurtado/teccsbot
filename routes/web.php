@@ -57,34 +57,34 @@ Route::get('/test', function () {
   // Notification::send($users, new App\Notifications\OnDemand('downline of Admin'));
   // dd($users);
 
-  // $node = App\User::create([
-  //     'mobile' => '09173011987',
-  //     'type' => 'App\Admin',
-  //     'children' => [
-  //         [
-  //             'mobile' => '09178251991',
-  //             'type' => 'App\Operator',
-  //             'children' => [
-  //                 [ 
-  //                   'mobile' => '09189362340', 
-  //                   'type' => 'App\Staff',
-  //                 ],
-  //             ],
-  //         ],
-  //         [
-  //             'mobile' => '09088882786',
-  //             'type' => 'App\Operator',
-  //             'children' => [
-  //                 [ 
-  //                   'mobile' => '09175180722', 
-  //                   'type' => 'App\Staff',
-  //                 ],
-  //             ],
-  //         ],
-  //     ],
-  // ]);
+  $node = App\User::create([
+      'mobile' => '09173011987',
+      'type' => 'App\Admin',
+      'children' => [
+          [
+              'mobile' => '09178251991',
+              'type' => 'App\Operator',
+              'children' => [
+                  [ 
+                    'mobile' => '09189362340', 
+                    'type' => 'App\Staff',
+                  ],
+              ],
+          ],
+          [
+              'mobile' => '09088882786',
+              'type' => 'App\Operator',
+              'children' => [
+                  [ 
+                    'mobile' => '09175180722', 
+                    'type' => 'App\Worker',
+                  ],
+              ],
+          ],
+      ],
+  ]);
 
-  // dd($node);
+  dd($node);
 
   // $nodes = App\User::get()->toTree();
 

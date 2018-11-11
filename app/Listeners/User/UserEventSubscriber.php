@@ -4,8 +4,9 @@ namespace App\Listeners\User;
 
 use App\Events\UserEvent;
 use App\Events\User\UserEvents;
+use App\Jobs\GenerateUserTasks;
 use App\Jobs\RegisterAuthyService;
-use App\Jobs\GenerateUserPlacements;
+
 
 class UserEventSubscriber
 {
@@ -25,6 +26,12 @@ class UserEventSubscriber
     	$user = $event->getUser();
 
     	RegisterAuthyService::dispatch($user);
+
+        // $class = get_class($user);
+        // if (property_exists($class, 'role'))
+        //     if ($role = $class::$role)
+        //         if (array_key_exists($role, config('chatbot.tasks')))
+                    GenerateUserTasks::dispatch($user);
     	// GenerateUserPlacements::dispatch($user);
     }
 
