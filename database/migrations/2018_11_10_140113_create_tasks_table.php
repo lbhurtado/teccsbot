@@ -18,6 +18,8 @@ class CreateTasksTable extends Migration
             $table->string('title');
             $table->text('instructions')->nullable();
             $table->integer('user_id')->unsigned();
+            $table->integer('priority')->unsigned()->nullable();
+            $table->integer('rank')->unsigned()->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('started_at')->nullable();
             $table->timestamp('abandoned_at')->nullable();

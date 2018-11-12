@@ -1,13 +1,14 @@
 <?php
 
 return [
-	'introduction' => "You have :count tasks.",
+	'introduction' => "You have :count available tasks.",
+	// 'introduction' => "You have :count available tasks.\n□ not accepted ■ accepted\n○ not started • started",
 	'choose' => [
-		'task' => 'Choose a task:',
-		'error' => 'Error! Something is wrong in choosing a task.',
+		'task' => "Choose a task:",
+		'error' => "Error! Something is wrong in choosing a task.",
 	],
 	'accept' => [
-		'question' => 'Do you accept this task?',
+		'question' => "Do you accept this task - \":title\"?",
 		'error' => 'Error! Something is wrong in accepting a task.',
 		'affirmative' => 'Yes, I accept.',
 		'negative' => 'No, thanks.',

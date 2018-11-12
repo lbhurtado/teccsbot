@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\Task;
+use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -18,9 +19,7 @@ class Tasking extends BaseConversation
 
     protected function introduction()
     {
-        $this->tasks = $this->getUser()->tasks()->whereNull('completed_at')->whereNull('abandoned_at')->get();
-        $count = $this->tasks->count();
-    	$this->bot->reply(trans('task.introduction', compact('count')));
+    	$this->bot->reply(trans('task.introduction', ['count' => $this->tasks->count()]));
 
     	return $this;
     }
@@ -39,17 +38,17 @@ class Tasking extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
         	if ($answer->isInteractiveMessageReply()) {
                 $task = $this->tasks->find($answer->getValue());
-        		// $task = Task::find($answer->getValue());
-                // $task = $answer->getValue();
-        		if ($task->accepted_at == null) {
+        		if (! $task->isAccepted()) {
         			return $this->acceptTask($task);
         		}
-        		elseif ($task->started_at == null) {
+        		elseif (! $task->hasStarted()) {
         			return $this->startTask($task);
         		}
         		else 
         			return $this->endTask($task);
         	}
+            else 
+                return $tihs->repeat();
         });
     }
 
@@ -146,5 +145,11 @@ class Tasking extends BaseConversation
 
         });
     	$this->bot->reply(trans('task.finished'));
+    }
+
+    public function setBot(BotMan $bot)
+    {
+        parent::setBot($bot);
+        $this->tasks = $this->getUser()->tasks()->available()->orderBy('rank', 'asc')->get();
     }
 }
