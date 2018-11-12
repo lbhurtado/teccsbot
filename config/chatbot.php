@@ -56,7 +56,7 @@ return [
             ['title' => 'Activity - Recruit 15 voters'],
         ],
         'worker' => [
-            ['title' => 'Activity - Read the manual'],
+            ['title' => 'Activity - Read the manual', 'instructions' => 'Start from page 1.'],
             ['title' => 'Activity - Register'],
             ['title' => 'Activity - Verify BEI Composition'],
             ['title' => 'Witness - Ballot Box Seal'],
