@@ -4,6 +4,7 @@ namespace App\Conversations;
 
 use App\Enum\Role;
 use App\{User, Phone};
+use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -13,6 +14,8 @@ class Invite extends BaseConversation
 	protected $code;
 
 	protected $mobile;
+
+    protected $codes;
 
     public function run()
     {
@@ -33,18 +36,29 @@ class Invite extends BaseConversation
         ->callbackId('invite_code')
         ;
 
-        $this->ask($question, function (Answer $answer) {
-            if (! $this->code = $this->checkCode($answer->getText())) {
-            
-                return $this->repeat(trans('invite.error.code'));                
+        foreach ($this->codes as $code) {
+            $question->addButton(Button::create(ucfirst($code))->value($code));
+        }
+
+        return $this->ask($question, function (Answer $answer) {
+            if ($answer->isInteractiveMessageReply()) {
+                $this->code = $answer->getValue();
+
+                return $this->inputMobile();
             }
+            else 
+                return $this->repeat();
+            // if (! $this->code = $this->checkCode($answer->getText())) {
+            
+            //     return $this->repeat(trans('invite.error.code'));                
+            // }
 
-            if (! $this->checkPermission()) {
+            // if (! $this->checkPermission()) {
 
-                return $this->repeat(trans('invite.error.permission'));  
-            }             
+            //     return $this->repeat(trans('invite.error.permission'));  
+            // }             
 
-            return $this->inputMobile();
+            // return $this->inputMobile();
         });
     }
 
@@ -139,5 +153,12 @@ class Invite extends BaseConversation
     protected function getMobile()
     {
         return $this->mobile;
+    }
+
+    public function setBot(BotMan $bot)
+    {
+        parent::setBot($bot);
+
+        $this->codes = array_values(Role::toArray());
     }
 }

@@ -42,7 +42,7 @@ class Tasking extends BaseConversation
                 return $this->readInstructions($task);
         	}
             else 
-                return $tihs->repeat();
+                return $this->repeat();
         });
     }
 

@@ -2,7 +2,7 @@
 
 return [
 	'input' => [
-		'code' => 'Input code for downline - operator, staff, worker, subscriber:',
+		'code' => 'Choose downline:',
 		'mobile' => 'Input mobile number:',	
 		'telegram' => 'Yes, send to Telegram.',
 		'facebook' => 'Yes, send to Facebook.',
