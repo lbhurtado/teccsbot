@@ -28,7 +28,7 @@ class Tasking extends BaseConversation
     {
         $question = Question::create(trans('task.choose.task'))
         ->fallback(trans('task.choose.error'))
-        ->callbackId('task_title')
+        ->callbackId('task_choose')
         ;
 
     	foreach ($this->tasks as $task) {
@@ -38,18 +38,57 @@ class Tasking extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
         	if ($answer->isInteractiveMessageReply()) {
                 $task = $this->tasks->find($answer->getValue());
-        		if (! $task->isAccepted()) {
-        			return $this->acceptTask($task);
-        		}
-        		elseif (! $task->hasStarted()) {
-        			return $this->startTask($task);
-        		}
-        		else 
-        			return $this->endTask($task);
+
+                return $this->readInstructions($task);
         	}
             else 
                 return $tihs->repeat();
         });
+    }
+
+    protected function readInstructions($task)
+    {
+        $question = Question::create(trans('task.read.optional'))
+        ->fallback(trans('task.read.error'))
+        ->callbackId('task_read')
+        ->addButtons([
+            Button::create(trans('task.read.affirmative'))->value('yes'),
+            Button::create(trans('task.read.negative'))->value('no'),
+        ])
+        ;
+
+        return $this->ask($question, function (Answer $answer) use ($task) {
+            if ($answer->isInteractiveMessageReply()) {
+                if ($answer->getValue() == 'yes') {
+                    $this->bot->reply(trans('task.read.instructions', ['instructions' => $task->instructions]));
+                }
+                else
+                    return $this->sentinel($task);
+            }
+            else 
+                return $this->repeat();
+
+            $continue = Question::create(trans('task.read.continue'))->addButton(Button::create(trans('task.read.affirmative')));
+
+            return $this->ask($continue, function (Answer $answer) use ($task) {
+                $this->sentinel($task);
+            });
+
+        });
+    }
+
+    protected function sentinel(Task $task)
+    {
+        if (! $task->isAccepted()) {
+
+            return $this->acceptTask($task);
+        }
+        elseif (! $task->hasStarted()) {
+
+            return $this->startTask($task);
+        }
+        else 
+            return $this->endTask($task);
     }
 
     protected function acceptTask(Task $task)
@@ -68,15 +107,16 @@ class Tasking extends BaseConversation
                 switch ($answer->getValue()) {
                     case 'yes':
                         $task->forceFill(['accepted_at' => now()])->save(); 
-                        $this->bot->reply(trans('task.accept.accepted'));
+                        $this->bot->reply(trans('task.accept.accepted', ['title' => $task->title]));
                         break;
                     case 'no':
-                        return $this->bot->reply(trans('task.accept.declined'));
-                        break;
+                        $this->bot->reply(trans('task.accept.declined', ['title' => $task->title]));
+
+                        return $this->done();
                 }
             }
             else 
-                return $tihs->repeat();
+                return $this->repeat();
 
             return $this->startTask($task);
         });
@@ -98,11 +138,12 @@ class Tasking extends BaseConversation
                 switch ($answer->getValue()) {
                     case 'yes':
                         $task->forceFill(['started_at' => now()])->save(); 
-                        $this->bot->reply(trans('task.start.accepted'));
+                        $this->bot->reply(trans('task.start.accepted', ['title' => $task->title]));
                         break;
                     case 'no':
-                        $this->bot->reply(trans('task.start.declined'));
-                        break;
+                        $this->bot->reply(trans('task.start.declined', ['title' => $task->title]));
+                        
+                        return $this->done();
                 }
             }
             else 
@@ -129,27 +170,33 @@ class Tasking extends BaseConversation
                 switch ($answer->getValue()) {
                     case 'yes':
                         $task->forceFill(['completed_at' => now()])->save(); 
-                        $this->bot->reply(trans('task.end.completed'));
+                        $this->bot->reply(trans('task.end.completed', ['title' => $task->title]));
                         break;
                     case 'no':
-                        $this->bot->reply(trans('task.end.deferred'));
+                        $this->bot->reply(trans('task.end.deferred', ['title' => $task->title]));
                         break;
                     case 'never':
                         $task->forceFill(['abandoned_at' => now()])->save(); 
-                        $this->bot->reply(trans('task.end.abandoned'));
+                        $this->bot->reply(trans('task.end.abandoned', ['title' => $task->title]));
                         break;
                 }
             }
             else 
                 return $tihs->repeat();
 
+            return $this->done();
         });
-    	$this->bot->reply(trans('task.finished'));
+    }
+
+    protected function done()
+    {
+        $this->bot->reply(trans('task.finished'));        
     }
 
     public function setBot(BotMan $bot)
     {
         parent::setBot($bot);
+
         $this->tasks = $this->getUser()->tasks()->available()->orderBy('rank', 'asc')->get();
     }
 }

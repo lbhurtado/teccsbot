@@ -11,7 +11,10 @@ class BaseConversation extends Conversation
 
     protected function getMessenger()
     {
-        return Messenger::instance($this->getDriver(), $this->getChannelId());
+        // return Messenger::instance($this->getDriver(), $this->getChannelId());
+        $driver = $this->getDriver();
+        $channel_id = $this->getChannelId();
+        return Messenger::where(compact('driver', 'channel_id'))->first();
     }
 
     protected function getUser()

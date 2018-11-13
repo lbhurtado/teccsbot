@@ -71,7 +71,7 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    function user_has_tasks()
+    function user_can_have_tasks()
     {
         $user = factory(\App\User::class)->create();
 

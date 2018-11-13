@@ -77,6 +77,11 @@ class Task extends Model
         return ! empty($this->completed_at); 
     }
 
+    public function hasCompleted()
+    {
+        return $this->isCompleted(); 
+    }
+
     public function isAbandoned()
     {
         return ! empty($this->abandoned_at); 
