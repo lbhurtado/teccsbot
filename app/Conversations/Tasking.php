@@ -61,6 +61,12 @@ class Tasking extends BaseConversation
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() == 'yes') {
                     $this->bot->reply(trans('task.read.instructions', ['instructions' => $task->instructions]));
+
+                    $continue = Question::create(trans('task.read.continue'))->addButton(Button::create(trans('task.read.affirmative')));
+
+                    return $this->ask($continue, function (Answer $answer) use ($task) {
+                        $this->sentinel($task);
+                    });
                 }
                 else
                     return $this->sentinel($task);
@@ -68,11 +74,7 @@ class Tasking extends BaseConversation
             else 
                 return $this->repeat();
 
-            $continue = Question::create(trans('task.read.continue'))->addButton(Button::create(trans('task.read.affirmative')));
 
-            return $this->ask($continue, function (Answer $answer) use ($task) {
-                $this->sentinel($task);
-            });
 
         });
     }
