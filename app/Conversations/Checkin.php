@@ -11,6 +11,10 @@ use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class Checkin extends BaseConversation
 {
+	protected $longitude;
+
+	protected $latitude;
+
     public function run()
     {
         $this->introduction()->verifyLocation();
@@ -25,15 +29,16 @@ class Checkin extends BaseConversation
 
     protected function verifyLocation()
     {
-		$this->say('Laracon EU 2018 is located in beautiful Amsterdam.');
-		$attachment = new Location(52.3832816, 4.9205266);
-		$message = OutgoingMessage::create('')->withAttachment($attachment);
+		$this->bot->receivesLocation(function($bot, Location $location) {
+		    $this->latitude = $location->getLatitude();
+		    $this->longitude = $location->getLongitude();
+		});
+		$attachment = new Location($this->latitude, $this->longitude);
+		$message = OutgoingMessage::create(trans('checkin.verify.message'))->withAttachment($attachment);
 	    $this->say($message, [
-	        'title' => 'Laracon EU 2018',
-	        'address' => 'Kromhouthal Gedempt Hamerkanaal 231 1021 KP Amsterdam, the Netherlands',
+	        'title' => trans('checkin.verify.title'),
+	        'address' => trans('checkin.verify.address'),
 	    ]);
-		    $this->say('There is also a map with info about the surrounding: https://snazzymaps.com/embed/69943 ');
-
 		// $this->bot->receivesLocation(function($bot, Location $location) {
 		//     $lat = $location->getLatitude();
 		//     $lng = $location->getLongitude();
