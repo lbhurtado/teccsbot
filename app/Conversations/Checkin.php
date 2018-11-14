@@ -33,9 +33,13 @@ class Checkin extends BaseConversation
 
     protected function verifyLocation()
     {
-$this->askForLocation("Please Give me your location", function (Location $location) {
-            $this->say('Received: '.print_r($location, true));
-});
+		$this->askForLocation("Please Give me your location", function (Location $location) {
+		    $this->bot->reply('here');
+		    $this->latitude = $location->getLatitude();
+		    $this->longitude = $location->getLongitude();
+		    $this->bot->reply('and here');
+            // $this->say('Received: '.print_r($location, true));
+		});
 
 	    // $this->askForLocation(trans('checkin.verify.location'), function (Location $location) {
 		   //  $this->latitude = $location->getLatitude();
