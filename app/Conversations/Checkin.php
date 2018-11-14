@@ -17,6 +17,10 @@ class Checkin extends BaseConversation
 
     public function run()
     {
+    	$this->latitude = 52.3832816;
+
+    	$this->longitude = 4.9205266;
+
         $this->introduction()->verifyLocation();
     }
 
@@ -29,11 +33,18 @@ class Checkin extends BaseConversation
 
     protected function verifyLocation()
     {
-	    $this->askForLocation(trans('checkin.verify.location'), function (Location $location) {
-		    $this->latitude = $location->getLatitude();
-		    $this->longitude = $location->getLongitude();
-	    });
+$this->askForLocation("Please Give me your location", function (Location $location) {
+            $this->say('Received: '.print_r($location, true));
+});
 
+	    // $this->askForLocation(trans('checkin.verify.location'), function (Location $location) {
+		   //  $this->latitude = $location->getLatitude();
+		   //  $this->longitude = $location->getLongitude();
+
+		   //  $this->bot->reply('here');
+	    // });
+
+	    $this->bot->reply('there');
 		$attachment = new Location($this->latitude, $this->longitude);
 		$message = OutgoingMessage::create(trans('checkin.verify.message'))->withAttachment($attachment);
 	    $this->say($message, [
@@ -44,5 +55,6 @@ class Checkin extends BaseConversation
 		//     $lat = $location->getLatitude();
 		//     $lng = $location->getLongitude();
 		// });
+		$this->bot->reply('everywhere');
     }
 }
