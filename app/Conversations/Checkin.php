@@ -29,10 +29,11 @@ class Checkin extends BaseConversation
 
     protected function verifyLocation()
     {
-		$this->bot->receivesLocation(function($bot, Location $location) {
+	    $this->askForLocation(trans('checkin.verify.location'), function (Location $location) {
 		    $this->latitude = $location->getLatitude();
 		    $this->longitude = $location->getLongitude();
-		});
+	    });
+
 		$attachment = new Location($this->latitude, $this->longitude);
 		$message = OutgoingMessage::create(trans('checkin.verify.message'))->withAttachment($attachment);
 	    $this->say($message, [
