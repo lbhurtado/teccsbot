@@ -43,28 +43,21 @@ class Invite extends BaseConversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->code = $answer->getValue();
+                if (! $this->checkPermission()) {
+
+                    return $this->repeat(trans('invite.error.permission'));  
+                } 
 
                 return $this->inputMobile();
             }
             else 
                 return $this->repeat();
-            // if (! $this->code = $this->checkCode($answer->getText())) {
-            
-            //     return $this->repeat(trans('invite.error.code'));                
-            // }
-
-            // if (! $this->checkPermission()) {
-
-            //     return $this->repeat(trans('invite.error.permission'));  
-            // }             
-
-            // return $this->inputMobile();
         });
     }
 
     protected function inputMobile()
     {
-        $question = Question::create(trans('invite.input.mobile'))
+        $question = Question::create(trans('invite.input.mobile', ['code' => $this->code]))
         ->fallback(trans('invite.mobile.error'))
         ->callbackId('invite_mobile')
         ;
@@ -122,17 +115,6 @@ class Invite extends BaseConversation
         else
             $this->bot->reply(trans('invite.fail'));   
     	
-    }
-
-    protected function checkCode($code)
-    {
-        $code = strtolower($code);
-        if (! in_array($code, array_values(Role::toArray()))) {
-
-            return false;
-        }
-
-        return $code;
     }
 
     protected function checkPermission()

@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Jobs\{InviteUser, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
+use App\Jobs\{InviteUser, RegisterAuthyService, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
 
 class User extends Authenticatable
 {
@@ -52,11 +52,12 @@ class User extends Authenticatable
     public static function seed($code, $mobile, $parent)
     {
         if (! $model = static::withMobile($mobile)->first()) {
-            $model = (static::$classes[$code])::create(compact('mobile'));
-            if ($model->wasRecentlyCreated) {
-                $model->appendToNode($parent);
-                $model->save();
-            }
+            // $model = (static::$classes[$code])::create(compact('mobile'));
+            $model = (static::$classes[$code])::create(compact('mobile'), $parent);
+            // if ($model->wasRecentlyCreated) {
+                // $model->appendToNode($parent);
+                // $model->save();
+            // }
         }
             
         return $model;
@@ -104,6 +105,13 @@ class User extends Authenticatable
     public function accepted(User $downline)
     {
         SendUserAccceptedNotification::dispatch($this, $downline);
+
+        return $this;
+    }
+
+    public function register()
+    {
+        RegisterAuthyService::dispatch($this);
 
         return $this;
     }

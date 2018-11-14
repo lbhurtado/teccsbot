@@ -3,7 +3,7 @@
 return [
 	'input' => [
 		'code' => 'Choose downline:',
-		'mobile' => 'Input mobile number:',	
+		'mobile' => 'Input :code mobile number:',	
 		'telegram' => 'Yes, send to Telegram.',
 		'facebook' => 'Yes, send to Facebook.',
 		'no' => 'No, please repeat.',

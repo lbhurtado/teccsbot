@@ -25,7 +25,7 @@ class UserEventSubscriber
     {
     	$user = $event->getUser();
 
-    	RegisterAuthyService::dispatch($user);
+    	// RegisterAuthyService::dispatch($user);
 
         // $class = get_class($user);
         // if (property_exists($class, 'role'))
