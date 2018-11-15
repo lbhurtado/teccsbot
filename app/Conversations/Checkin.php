@@ -34,20 +34,13 @@ class Checkin extends BaseConversation
 		    $this->longitude = $location->getLongitude();
 
 		    return $this->process();
-    		// $this->bot->reply(trans('checkin.processing.1'));
-			// $this->getUser()->checkin($location->getLongitude(), $location->getLatitude());
-		    // return $this->process($location->getLongitude(), $location->getLatitude());
-    		// $this->bot->reply(trans('checkin.processed'));
 		});
     }
 
     protected function process()
     {
-    	$this->bot->reply(trans('checkin.processing.6'));
-    // 	// $this->getUser()->checkins()->create(compact('longitude', 'latitude'));
-    // 	$this->getUser()->checkin(compact('longitude', 'latitude'));
-    	// $this->getUser()->checkin(5.1, 6.2);
-    	$this->bot->reply($this->getMessenger()->checkin(4.5,5.6));
-    	$this->bot->reply(trans('checkin.processed.6'));
+    	$this->bot->reply(trans('checkin.processing.8'));
+    	$this->getMessenger()->checkin($this->longitude, $this->latitude);
+    	$this->bot->reply(trans('checkin.processed.8'));
     }
 }
