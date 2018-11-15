@@ -43,10 +43,11 @@ class Checkin extends BaseConversation
 
     protected function process()
     {
-    	$this->bot->reply(trans('checkin.processing.1'));
+    	$this->bot->reply(trans('checkin.processing.2'));
     // 	// $this->getUser()->checkins()->create(compact('longitude', 'latitude'));
     // 	$this->getUser()->checkin(compact('longitude', 'latitude'));
-    	$this->getUser()->checkin(5.1, 6.2);
-    	$this->bot->reply(trans('checkin.processed.1'));
+    	// $this->getUser()->checkin(5.1, 6.2);
+    	$this->bot->reply($this->getUser()->name);
+    	$this->bot->reply(trans('checkin.processed.2'));
     }
 }

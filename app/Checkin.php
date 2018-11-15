@@ -2,12 +2,12 @@
 
 namespace App;
 
-use Malhal\Geographical\Geographical;
+// use Malhal\Geographical\Geographical;
 use Illuminate\Database\Eloquent\Model;
 
 class Checkin extends Model
 {
-    use Geographical;
+    // use Geographical;
 
     protected static $kilometers = true;
     
