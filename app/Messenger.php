@@ -71,6 +71,18 @@ class Messenger extends Model
         $this->update(['wants_notifications' => true]);
     }
 
+    public function checkin(...$coordinates)
+    {
+        $coordinates = array_flatten($coordinates);
+        $longitude = $coordinates[0];
+        $latitude = $coordinates[1];
+        // $remarks = $coordinates[2]
+
+        $this->checkins()->create(compact('longitude', 'latitude'));
+
+        return $this;
+    }
+    
     public function scopeWantsUpdates($query)
     {
         return $query->where('wants_notifications', true);
@@ -84,5 +96,10 @@ class Messenger extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function checkins()
+    {
+        return $this->hasMany(Checkin::class);
     }
 }

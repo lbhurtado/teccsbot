@@ -171,17 +171,17 @@ class User extends Authenticatable
         return $this;
     }
 
-    public function checkin(...$coordinates)
-    {
-        $coordinates = array_flatten($coordinates);
-        $longitude = $coordinates[0];
-        $latitude = $coordinates[1];
-        // $remarks = $coordinates[2]
+    // public function checkin(...$coordinates)
+    // {
+    //     $coordinates = array_flatten($coordinates);
+    //     $longitude = $coordinates[0];
+    //     $latitude = $coordinates[1];
+    //     // $remarks = $coordinates[2]
 
-        $this->checkins()->create(compact('longitude', 'latitude'));
+    //     $this->checkins()->create(compact('longitude', 'latitude'));
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function setMobileAttribute($value)
     {
@@ -213,10 +213,10 @@ class User extends Authenticatable
         return $this->hasMany(Task::class);
     }
 
-    public function checkins()
-    {
-        return $this->hasMany(Checkin::class);
-    }
+    // public function checkins()
+    // {
+    //     return $this->hasMany(Checkin::class);
+    // }
 
     public function scopeWithMobile($query, $value)
     {

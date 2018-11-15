@@ -15,12 +15,12 @@ class CreateCheckinsTable extends Migration
     {
         Schema::create('checkins', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('messenger_id')->unsigned();
             $table->double('longitude');
             $table->double('latitude');
             $table->text('remarks')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('messenger_id')->references('id')->on('messengers')->onDelete('cascade');
         });
     }
 

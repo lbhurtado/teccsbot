@@ -17,8 +17,8 @@ class Checkin extends Model
     	'remarks',
     ];
 
-    public function user()
+    public function messenger()
     {
-    	return $this->belongsTo(User::class);
+    	return $this->belongsTo(Messenger::class);
     }
 }
