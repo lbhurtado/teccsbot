@@ -30,8 +30,8 @@ class Checkin extends BaseConversation
     protected function inputLocation()
     {
 		return $this->askForLocation(trans('checkin.input.location'), function (Location $location) {
-		    // $this->latitude = $location->getLatitude();
-		    // $this->longitude = $location->getLongitude();
+		    $this->latitude = $location->getLatitude();
+		    $this->longitude = $location->getLongitude();
 
 		    return $this->process();
     		// $this->bot->reply(trans('checkin.processing.1'));
@@ -43,11 +43,11 @@ class Checkin extends BaseConversation
 
     protected function process()
     {
-    	$this->bot->reply(trans('checkin.processing.5'));
+    	$this->bot->reply(trans('checkin.processing.6'));
     // 	// $this->getUser()->checkins()->create(compact('longitude', 'latitude'));
     // 	$this->getUser()->checkin(compact('longitude', 'latitude'));
     	// $this->getUser()->checkin(5.1, 6.2);
-    	$this->bot->reply($this->getMessenger()->checkin(1.2,2.3));
-    	$this->bot->reply(trans('checkin.processed.5'));
+    	$this->bot->reply($this->getMessenger()->checkin(4.5,5.6));
+    	$this->bot->reply(trans('checkin.processed.6'));
     }
 }
