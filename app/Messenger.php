@@ -78,9 +78,9 @@ class Messenger extends Model
         $latitude = $coordinates[1];
         // $remarks = $coordinates[2]
 
-        $this->checkins()->create(compact('longitude', 'latitude'));
+        $checkin = $this->checkins()->create(compact('longitude', 'latitude'));
 
-        return $this;
+        return $checkin;
     }
     
     public function scopeWantsUpdates($query)

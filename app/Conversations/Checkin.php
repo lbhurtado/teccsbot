@@ -43,7 +43,9 @@ class Checkin extends BaseConversation
     protected function process()
     {
     	$this->bot->reply(trans('checkin.processing'));
-    	$this->getMessenger()->checkin($this->longitude, $this->latitude);
+    	$checkin = $this->getMessenger()->checkin($this->longitude, $this->latitude);
+    	 \App\Jobs\ReverseGeocode::dispatch($checkin);
+
     	$this->bot->reply(trans('checkin.processed'));
 
     	$this->done();

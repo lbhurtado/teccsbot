@@ -18,6 +18,7 @@ class CreateCheckinsTable extends Migration
             $table->integer('messenger_id')->unsigned();
             $table->double('longitude');
             $table->double('latitude');
+            $table->string('location')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
             $table->foreign('messenger_id')->references('id')->on('messengers')->onDelete('cascade');

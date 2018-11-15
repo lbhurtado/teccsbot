@@ -6,6 +6,7 @@ use App\Messenger;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+// use Illuminate\Support\Facades\Geocoder;
 
 class MessengerTest extends TestCase
 {
@@ -27,10 +28,15 @@ class MessengerTest extends TestCase
     {
         $messenger = factory(Messenger::class)->create();
         $messenger_id = $messenger->id;
-        $longitude = 4.9205266;
-        $latitude = 52.3832816;
+        $longitude = 121.17332;
+        $latitude = 13.928264;
 
         $messenger->checkin(compact('longitude', 'latitude'));
         $this->assertDatabaseHas('checkins', compact('messenger_id', 'longitude', 'latitude'));
+
+        // $geocoder = new Geocoder();
+        // \Geocoder::getAddressForCoordinates($latitude, $longitude);
+
+        // dd(\Geocoder::getAddressForCoordinates($latitude, $longitude)['formatted_address']);
     }
 }

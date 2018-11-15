@@ -8,6 +8,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class CheckinTest extends TestCase
 {
@@ -36,13 +37,21 @@ class CheckinTest extends TestCase
     }
 
     /** @test */
-    public function task_successful_run()
+    public function checkin_successful_run()
     {
+        $longitude = 121.17332;
+        $latitude = 13.928264;
+
         $this->bot
             ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('checkin.introduction', ['name' => $this->user->name]))
+            ->assertTemplate(OutgoingMessage::class)
+            ->receivesLocation($latitude, $longitude)
+            ->assertReply(trans('checkin.processing'))
+            ->assertReply(trans('checkin.processed'))
+            ->assertReply(trans('checkin.finished'))
             ;
     }
 }

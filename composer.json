@@ -31,6 +31,7 @@
         "myclabs/php-enum": "^1.6",
         "nexmo/client": "^1.5",
         "propaganistas/laravel-phone": "^4.0",
+        "spatie/geocoder": "^3.3",
         "spatie/laravel-model-status": "^1.6",
         "spatie/laravel-permission": "^2.23",
         "spatie/laravel-schemaless-attributes": "^1.2",
