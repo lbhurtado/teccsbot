@@ -179,6 +179,8 @@ class User extends Authenticatable
         // $remarks = $coordinates[2]
 
         $this->checkins()->create(compact('longitude', 'latitude'));
+
+        return $this;
     }
 
     public function setMobileAttribute($value)
