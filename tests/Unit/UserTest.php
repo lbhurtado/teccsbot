@@ -92,4 +92,20 @@ class UserTest extends TestCase
             'user_id' => $user->id,
         ]);
     }    
+
+
+    /** @test */
+    function user_can_checkin()
+    {
+        $user = factory(\App\User::class)->create();
+        $user_id = $user->id;
+        $longitude = 4.9205266;
+        $latitude = 52.3832816;
+
+        // $user->checkins()->create(compact('longitude', 'latitude'));
+
+        // $user->checkin($longitude, $latitude);
+        $user->checkin(compact('longitude', 'latitude'));
+        $this->assertDatabaseHas('checkins', compact('user_id', 'longitude', 'latitude'));
+    }
 }
