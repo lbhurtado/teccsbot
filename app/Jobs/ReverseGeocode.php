@@ -31,10 +31,16 @@ class ReverseGeocode implements ShouldQueue
      */
     public function handle()
     {
-        $geocode = \Geocoder::getAddressForCoordinates($this->checkin->latitude, $this->checkin->longitude);
-        $location = $geocode['formatted_address'] ?? 'failed to get location';
+        $location = $this->getGeoCode()['formatted_address'];
 
-        $this->checkin->location = $location;
-        $this->checkin->save();
+        $this->checkin->forceFill(compact('location'))->save();
+    }
+
+    protected function getGeoCode()
+    {
+        return \Geocoder::getAddressForCoordinates(
+            $this->checkin->latitude, 
+            $this->checkin->longitude
+        );
     }
 }

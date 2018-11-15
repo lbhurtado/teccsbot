@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
-use App\Listeners\User\UserEventSubscriber;
+use App\Listeners\User\{UserEventSubscriber, MessengerEventSubscriber};
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -15,6 +15,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         UserEventSubscriber::class,
+        MessengerEventSubscriber::class,
     ];
 
     /**

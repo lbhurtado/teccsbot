@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Messenger;
+use App\Observers\MessengerObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Messenger::observe(MessengerObserver::class);
     }
 
     /**
