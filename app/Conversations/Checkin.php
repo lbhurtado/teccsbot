@@ -41,7 +41,7 @@ class Checkin extends BaseConversation
 		});
     }
 
-    // protected function process($longitude, $latitude)
+    protected function process()
     // {
     	$this->bot->reply(trans('checkin.processing.1'));
     // 	// $this->getUser()->checkins()->create(compact('longitude', 'latitude'));
