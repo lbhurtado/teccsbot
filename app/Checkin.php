@@ -14,6 +14,7 @@ class Checkin extends Model
     protected $fillable = [
     	'longitude',
     	'latitude',
+        'location',
     	'remarks',
     ];
 

@@ -42,6 +42,7 @@ class CheckinTest extends TestCase
         $longitude = 121.17332;
         $latitude = 13.928264;
 
+        \Queue::fake();
         $this->bot
             ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
@@ -53,5 +54,7 @@ class CheckinTest extends TestCase
             ->assertReply(trans('checkin.processed'))
             ->assertReply(trans('checkin.finished'))
             ;
+
+        \Queue::assertPushed(\App\Jobs\ReverseGeocode::class);
     }
 }
