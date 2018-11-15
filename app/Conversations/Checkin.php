@@ -2,7 +2,7 @@
 
 namespace App\Conversations;
 
-// use BotMan\BotMan\BotMan;
+use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Attachments\Location;
@@ -11,6 +11,8 @@ use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class Checkin extends BaseConversation
 {
+	protected $user;
+
 	protected $longitude;
 
 	protected $latitude;
@@ -22,7 +24,8 @@ class Checkin extends BaseConversation
 
     protected function introduction()
     {
-    	$this->bot->reply(trans('checkin.introduction'));
+    	$name = $this->user->name;
+    	$this->bot->reply(trans('checkin.introduction', compact('name')));
 
     	return $this;
     }
@@ -39,8 +42,22 @@ class Checkin extends BaseConversation
 
     protected function process()
     {
-    	$this->bot->reply(trans('checkin.processing.8'));
+    	$this->bot->reply(trans('checkin.processing'));
     	$this->getMessenger()->checkin($this->longitude, $this->latitude);
-    	$this->bot->reply(trans('checkin.processed.8'));
+    	$this->bot->reply(trans('checkin.processed'));
+
+    	$this->done();
+    }
+
+    protected function done()
+    {
+    	$this->bot->reply(trans('checkin.finished'));
+    }
+
+    public function setBot(BotMan $bot)
+    {
+        parent::setBot($bot);
+
+        $this->user = $this->getUser();
     }
 }

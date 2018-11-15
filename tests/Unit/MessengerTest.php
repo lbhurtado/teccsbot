@@ -30,9 +30,6 @@ class MessengerTest extends TestCase
         $longitude = 4.9205266;
         $latitude = 52.3832816;
 
-        // $user->checkins()->create(compact('longitude', 'latitude'));
-
-        // $user->checkin($longitude, $latitude);
         $messenger->checkin(compact('longitude', 'latitude'));
         $this->assertDatabaseHas('checkins', compact('messenger_id', 'longitude', 'latitude'));
     }
