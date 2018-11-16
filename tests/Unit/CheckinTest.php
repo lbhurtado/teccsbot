@@ -2,12 +2,13 @@
 
 namespace Tests\Unit;
 
-use App\Messenger;
+use App\Checkin;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Geocoder\Facades\Geocoder;
 
-class MessengerTest extends TestCase
+class CheckinTest extends TestCase
 {
 	use RefreshDatabase, WithFaker;
 
@@ -15,7 +16,7 @@ class MessengerTest extends TestCase
     {
         parent::setUp();
 
-        $this->withoutEvents();
+        // $this->withoutEvents();
 
         $this->faker = $this->makeFaker('en_PH');
 
@@ -23,14 +24,15 @@ class MessengerTest extends TestCase
     }
 
     /** @test */
-    function messenger_can_checkin()
+    function checkin_can_autopopulate_location()
     {
-        $messenger = factory(Messenger::class)->create();
-        $messenger_id = $messenger->id;
         $longitude = 121.17332;
         $latitude = 13.928264;
+        $checkin = factory(Checkin::class)->create(compact('longitude', 'latitude'));
+        $messenger_id = $checkin->messenger->id;
 
-        $messenger->checkin(compact('longitude', 'latitude'));
+        $checkin->refresh();
         $this->assertDatabaseHas('checkins', compact('messenger_id', 'longitude', 'latitude'));
+        $this->assertNotNull($checkin->location);
     }
 }

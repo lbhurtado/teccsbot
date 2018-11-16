@@ -10,20 +10,20 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessengerEvent
+class CheckinEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $messenger;
+    protected $checkin;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($messenger)
+    public function __construct($checkin)
     {
-        $this->messenger = $messenger;
+        $this->checkin = $checkin;
     }
 
     /**
@@ -33,11 +33,11 @@ class MessengerEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('messenger-event');
+        return new PrivateChannel('checkin-event');
     }
 
-    public function getMessenger()
+    public function getCheckin()
     {
-        return $this->messenger;
+        return $this->checkin;
     }
 }

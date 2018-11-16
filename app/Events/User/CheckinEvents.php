@@ -2,7 +2,7 @@
 
 namespace App\Events\User;
 
-class CHeckinEvents
+class CheckinEvents
 {
 	const CREATING = 'checkin.creating';
 	const CREATED  = 'checkin.created';
