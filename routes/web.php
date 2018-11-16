@@ -57,34 +57,34 @@ Route::get('/test', function () {
   // Notification::send($users, new App\Notifications\OnDemand('downline of Admin'));
   // dd($users);
 
-  $node = App\User::create([
-      'mobile' => '09173011987',
-      'type' => 'App\Admin',
-      'children' => [
-          [
-              'mobile' => '09178251991',
-              'type' => 'App\Operator',
-              'children' => [
-                  [ 
-                    'mobile' => '09189362340', 
-                    'type' => 'App\Staff',
-                  ],
-              ],
-          ],
-          [
-              'mobile' => '09088882786',
-              'type' => 'App\Operator',
-              'children' => [
-                  [ 
-                    'mobile' => '09175180722', 
-                    'type' => 'App\Worker',
-                  ],
-              ],
-          ],
-      ],
-  ]);
+  // $node = App\User::create([
+  //     'mobile' => '09173011987',
+  //     'type' => 'App\Admin',
+  //     'children' => [
+  //         [
+  //             'mobile' => '09178251991',
+  //             'type' => 'App\Operator',
+  //             'children' => [
+  //                 [ 
+  //                   'mobile' => '09189362340', 
+  //                   'type' => 'App\Staff',
+  //                 ],
+  //             ],
+  //         ],
+  //         [
+  //             'mobile' => '09088882786',
+  //             'type' => 'App\Operator',
+  //             'children' => [
+  //                 [ 
+  //                   'mobile' => '09175180722', 
+  //                   'type' => 'App\Worker',
+  //                 ],
+  //             ],
+  //         ],
+  //     ],
+  // ]);
 
-  dd($node);
+  // dd($node);
 
   // $nodes = App\User::get()->toTree();
 
@@ -98,5 +98,16 @@ Route::get('/test', function () {
 
   // $traverse($nodes);
  
+  $api_key = 'DqG7x_2D6sNvwE5oL9kZB1zrDO3J4i8qRUBL';
+  $project_id = 'PJf3e398e4fb9f4a07';
+
+  $this->api = new Telerivet_API($api_key);
+    $this->project = $this->api->initProjectById($project_id);
+
+  $content = 'The quick brown fox jumps over the lazy dog.';
+  $to_numbers = '639173011987';
+
+  $retval = $this->project->sendMessages(compact('content', 'to_numbers'));
+
     dd('should not be here!');
 });

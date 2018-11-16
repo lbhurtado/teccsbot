@@ -90,6 +90,11 @@ class User extends Authenticatable
         return compact('id');
     }
 
+    public function routeNotificationForTelerivet()
+    {
+        return $this->mobile;
+    }
+
     public function getDefaultMessenger()
     {
         return $this->messengers()->whereIn('driver',['Telegram','Facebook'])->first();
