@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Jobs\{InviteUser, RegisterAuthyService, RequestOTP, VerifyOTP, SendUserAccceptedNotification};
+use App\Jobs\{InviteUser, RegisterAuthyService, RequestOTP, VerifyOTP, SendUserAccceptedNotification, SendAirtimeCredits};
 
 class User extends Authenticatable
 {
@@ -92,7 +92,7 @@ class User extends Authenticatable
 
     public function routeNotificationForTelerivet()
     {
-        return $this->mobile;
+        return $this->telerivet_id;
     }
 
     public function getDefaultMessenger()
@@ -131,6 +131,12 @@ class User extends Authenticatable
         VerifyOTP::dispatch($this, $otp);
 
         return $this;
+    }
+
+
+    public function loadCredits()
+    {
+        SendAirtimeCredits::dispatch($this);
     }
 
     public function isVerified()

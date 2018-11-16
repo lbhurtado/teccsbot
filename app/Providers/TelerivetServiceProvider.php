@@ -20,7 +20,7 @@ class TelerivetServiceProvider extends ServiceProvider
             ->give(function () {
                 $config = config('broadcasting.connections.telerivet');
 
-                return new Telerivet($config['api_key'], $config['project_id']);
+                return new Telerivet($config['api_key'], $config['project_id'], $config['service_id']);
             });
     }
 

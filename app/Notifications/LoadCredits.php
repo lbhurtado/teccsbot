@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Channels\{TelerivetChannel, TelerivetMessage};
 
-class Welcome extends Notification
+class LoadCredits extends Notification
 {
     use Queueable;
 
@@ -15,7 +15,7 @@ class Welcome extends Notification
 
     public function __construct()
     {
-        $this->content = trans('onboarding.welcome');
+        $this->content = "Yes yes yo!";
     }
 
     public function via($notifiable)
@@ -27,6 +27,7 @@ class Welcome extends Notification
     {
         return TelerivetMessage::create()
             ->content($this->content)
+            ->load(true)
             ;
     }
 }

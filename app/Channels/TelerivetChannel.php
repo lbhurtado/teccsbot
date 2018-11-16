@@ -3,42 +3,46 @@
 namespace App\Channels;
 
 use App\Services\Telerivet;
+use App\Jobs\RegisterTelerivetService;
 use Illuminate\Notifications\Notification;
 
 class TelerivetChannel
 {
-    protected $project;
+    private $api;
 
-    /**
-     * Channel constructor.
-     *
-     * @param Telerivet $telerivet
-     */
     public function __construct(Telerivet $telerivet)
     {
-        $this->project = $telerivet->getProject();
+        $this->api = $telerivet;
     }
 
-    /**
-     * Send the given notification.
-     *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return void
-     */
     public function send($notifiable, Notification $notification)
     {
-        if (! $mobile = $notifiable->routeNotificationFor('telerivet')) {
-            return false;
-        }
+        if (! $notifiable->routeNotificationFor('telerivet'))
+            RegisterTelerivetService::dispatch($notifiable, $this->getAPI()->getProject());
 
         $message = $notification->toTelerivet($notifiable);
+        if ($message->load)
+            $this->getAPI()->getService()->invoke($this->getArguments($notifiable, $message));
+        else
+            $this->getAPI()->getProject()->sendMessage($this->getArguments($notifiable, $message));
 
-        $retval = $this->project->sendMessage(array(
-            'to_number' => $mobile,
-            'content' => $message->content
-        ));
+        return true;
+    }
 
-        return $retval->status;
+    public function getArguments($notifiable, $message)
+    {
+        $retval['context'] = 'contact';
+        $retval['contact_id'] = $notifiable->routeNotificationFor('telerivet');
+        $retval['content'] = $message->content;
+
+        if (empty($retval['contact_id']))
+            $retval['to_number'] = $notifiable->mobile;
+
+        return $retval;
+    }
+
+    protected function getAPI()
+    {
+        return $this->api;
     }
 }

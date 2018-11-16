@@ -5,6 +5,13 @@ namespace App\Channels;
 class TelerivetMessage
 {
     /**
+     * Load credits.
+     *
+     * @var boolean
+     */
+    public $load = false;
+
+    /**
      * The message content.
      *
      * @var string
@@ -70,6 +77,19 @@ class TelerivetMessage
     public function from($from)
     {
         $this->from = $from;
+
+        return $this;
+    }
+
+    /**
+     * Set the load.
+     *
+     * @param  boolean $load
+     * @return $this
+     */
+    public function load($load)
+    {
+        $this->load = $load;
 
         return $this;
     }

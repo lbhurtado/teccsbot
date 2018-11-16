@@ -56,8 +56,9 @@ return [
 
         'telerivet' => [
             'driver' => 'telerivet',
-            'api_key' => env('TELERIVET_API_KEY', 'DqG7x_2D6sNvwE5oL9kZB1zrDO3J4i8qRUBL'),
-            'project_id' => env('TELERIVET_PROJECT_ID', 'PJf3e398e4fb9f4a07'),
+            'api_key' => env('TELERIVET_API_KEY'),
+            'project_id' => env('TELERIVET_PROJECT_ID'),
+            'service_id' => env('TELERIVET_SERVICE_ID'),
         ],
 
     ],

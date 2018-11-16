@@ -8,14 +8,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-//note: inherit from RegisterService Abstract class
-class RegisterAuthyService implements ShouldQueue
+abstract class RegisterService implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $field;
+
     protected $proto;
 
-    public $user;
+    protected $user;
 
     /**
      * Create a new job instance.
@@ -38,18 +39,23 @@ class RegisterAuthyService implements ShouldQueue
      */
     public function handle()
     {
-        $authy_id = $this->getAuthyId();
+        $authy_id = $this->getId();
 
-        tap($this->user, function($user) use ($authy_id) {
-            $user->forceFill(compact('authy_id'));
+        tap($this->getUser(), function($user) {
+            $user->forceFill(compact($this->getField()));
         })->save();
     }
 
-    protected function getAuthyId()
+    abstract public function getId();
+
+    protected function getUser()
     {
-        return app('rinvex.authy.user')
-            ->register($this->getEmail(), $this->getNumber(), $this->getCountryCode())
-            ->get('user')['id'];
+        return $this->user;
+    }
+
+    protected function getField()
+    {
+        return $this->field;
     }
 
     protected function getCountryCode()
