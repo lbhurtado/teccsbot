@@ -46,7 +46,7 @@ class UserInvitation extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)
-                    ->content($this->getContent());
+                    ->content($this->getContent($notifiable));
     }
     /**
      * Get the mail representation of the notification.
