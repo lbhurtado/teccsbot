@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Tightenco\Parental\ReturnsChildModels;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Jobs\{InviteUser, RegisterAuthyService, RequestOTP, VerifyOTP, SendUserAccceptedNotification, SendAirtimeCredits};
+use App\Jobs\{InviteUser, RegisterAuthyService, RequestOTP, VerifyOTP, SendUserAccceptedNotification, SendAirtimeCredits, RegisterTelerivetService};
 
 class User extends Authenticatable
 {
@@ -117,6 +117,13 @@ class User extends Authenticatable
     public function register()
     {
         RegisterAuthyService::dispatch($this);
+
+        return $this;
+    }
+
+    public function registerTelerivet()
+    {
+        RegisterTelerivetService::dispatch($this);
 
         return $this;
     }

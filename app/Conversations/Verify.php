@@ -78,6 +78,8 @@ class Verify extends BaseConversation
             //test this one out;
             $user->register()->challenge();
 
+            $user->registerTelerivet();
+            
             return $this->inputPIN($user);
         });
     }

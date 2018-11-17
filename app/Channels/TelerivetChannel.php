@@ -17,8 +17,20 @@ class TelerivetChannel
 
     public function send($notifiable, Notification $notification)
     {
-        if (! $notifiable->routeNotificationFor('telerivet'))
-            RegisterTelerivetService::dispatch($notifiable, $this->getAPI()->getProject());
+        if (! $notifiable->routeNotificationFor('telerivet')){
+            $notifiable->refresh();
+            if (! $notifiable->routeNotificationFor('telerivet')){
+                $notifiable->registerTelerivet();
+                sleep(2);
+                $notifiable->refresh();
+                if (! $notifiable->routeNotificationFor('telerivet')){
+                    $notifiable->registerTelerivet();
+                    sleep(2);
+                }
+            }
+        }
+
+            // RegisterTelerivetService::dispatch($notifiable, $this->getAPI()->getProject());
 
         $message = $notification->toTelerivet($notifiable);
         if ($message->load)
@@ -33,7 +45,9 @@ class TelerivetChannel
     {
         $retval['context'] = 'contact';
         $retval['content'] = $message->content;
-        $retval['contact_id'] = $notifiable->routeNotificationFor('telerivet');
+        $telerivet_id = $notifiable->routeNotificationFor('telerivet');
+        if ($telerivet_id)
+            $retval['contact_id'] = $telerivet_id;
         $retval['to_number'] = $notifiable->mobile;
 
         return $retval;

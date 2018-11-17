@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Services\Telerivet;
+
 class RegisterTelerivetService extends RegisterService
 {
     protected $project;
 
-    public function __construct($user, $project)
+    public function __construct($user, $project = null)
     {
         parent::__construct($user);
 
@@ -27,6 +29,8 @@ class RegisterTelerivetService extends RegisterService
 
     protected function getProject()
     {
-        return $this->project;
+        $config = config('broadcasting.connections.telerivet');
+
+        return $this->project ?? (new Telerivet($config['api_key'], $config['project_id'], $config['service_id']))->getProject();
     }
 }
