@@ -168,7 +168,8 @@ class SignUp extends Conversation
 
     private function sendOTP()
     {
-        RequestOTP::dispatch($this->getUser());
+        // RequestOTP::dispatch($this->getUser());
+        $this->getUser()->challenge();
     }
 
     private function verifyOTP($otp)

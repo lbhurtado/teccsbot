@@ -2,6 +2,7 @@
 
 namespace App;
 
+use OTPHP\TOTP;
 use App\Traits\IsObservable;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\ModelStatus\HasStatuses;
@@ -48,6 +49,8 @@ class User extends Authenticatable
     protected $guard_name = 'web';
 
     protected $appends = ['messenger'];
+
+    protected $totp;
 
     public static function seed($code, $mobile, $parent)
     {
@@ -130,12 +133,18 @@ class User extends Authenticatable
 
     public function challenge()
     {
-        RequestOTP::dispatch($this);
+        $this->totp = TOTP::create(null, 360);
+
+        RequestOTP::dispatch($this, $this->totp->now());
     }
 
     public function verify($otp)
     {
-        VerifyOTP::dispatch($this, $otp);
+        $verified = $this->totp->verify($otp);
+
+        if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
+
+        // VerifyOTP::dispatch($this, $otp);
 
         return $this;
     }

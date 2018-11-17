@@ -35,6 +35,7 @@
         "spatie/laravel-model-status": "^1.6",
         "spatie/laravel-permission": "^2.23",
         "spatie/laravel-schemaless-attributes": "^1.2",
+        "spomky-labs/otphp": "^9.1",
         "telerivet/telerivet-php-client": "^1.1",
         "tightenco/parental": "^0.5.0"
     },
