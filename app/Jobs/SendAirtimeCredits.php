@@ -33,5 +33,9 @@ class SendAirtimeCredits implements ShouldQueue
     public function handle()
     {
         $this->user->notify(new LoadCredits());
+        if (! $this->user->extra_attributes->loaded) {
+            $this->user->extra_attributes->loaded = true;
+            $this->user->save();            
+        }
     }
 }

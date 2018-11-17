@@ -59,8 +59,9 @@ class UserEventSubscriber
     	$user = $event->getUser(); 
 
         if ($user->isDirty('verified_at'))
-            if ($user->verified_at)
-                $user->loadCredits();
+            if ($user->verified())
+                if (! $user->extra_attributes->loaded)
+                    $user->loadCredits();
     }
 
     /**
