@@ -42,13 +42,13 @@ class UserEventSubscriber
     {
         $user = $event->getUser();
         // dd($user);
-        if ($user->isDirty('verified_at')){
+        // if ($user->isDirty('verified_at')){
             // if ($user->verified()) {
-                $user->loadCredits();        
+                // $user->loadCredits();        
             // }
             // $new_email = $user->email; 
             // $old_email = User::find($user->id)->email; 
-        }
+        // }
     }
 
     /**
