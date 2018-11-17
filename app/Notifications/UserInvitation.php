@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\NexmoMessage;
 use App\Channels\{TelerivetChannel, TelerivetMessage};
 
 class UserInvitation extends Notification
@@ -34,7 +35,7 @@ class UserInvitation extends Notification
      */
     public function via($notifiable)
     {
-        return ['nexmo'];
+        return [TelerivetChannel::class];
     }
 
     /**
