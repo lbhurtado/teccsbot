@@ -39,7 +39,7 @@ class Invite extends BaseConversation
 
         $this->quizQuestions = Question::all()->shuffle();
         $this->questionCount = $this->quizQuestions->count();
-        $this->quizQuestions = $this->quizQuestions->keyBy('code');
+        $this->quizQuestions = $this->quizQuestions->keyBy('id');
 
         $this->introduction()->survey();
     }
