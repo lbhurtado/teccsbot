@@ -57,10 +57,9 @@ class UserEventSubscriber
     public function onUserUpdated(UserEvent $event)
     {
     	$user = $event->getUser(); 
-        
-        if ($user->verified()) {
-            $user->loadCredits();        
-        }
+
+        if ($user->verified_at)
+            $user->loadCredits();
     }
 
     /**
