@@ -75,11 +75,7 @@ class Verify extends BaseConversation
 
             $user = $this->associateMessengerFromMobile($messenger, $name, $mobile);
 
-            //test this one out;
-            // $user->registerAuthy();
             $user->challenge();
-
-            // $user->registerTelerivet();
 
             return $this->inputPIN($user);
         });
@@ -109,11 +105,12 @@ class Verify extends BaseConversation
             return $this->inputPIN($user);
         }
         
-        $user->parent->accepted($user);
+        $user->parent->accepted($user); //change this to $user->accept();
 
         $this->getMessenger()->setStatus('accepted', trans('verify.reason'));
-        // $user->setStatus('accepted', trans('verify.reason'));
-        $user->loadCredits(); //not working
+
+        $user->loadCredits();
+
         $this->bot->reply(trans('verify.success'));
         $this->bot->reply(trans('verify.continue'));
     }

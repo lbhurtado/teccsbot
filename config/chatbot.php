@@ -67,4 +67,35 @@ return [
             ['title' => 'Activity - Poll Count', 'rank' => '8'],
         ],
     ],
+    'surveys' => [
+        [
+            'code' => 'Mayor',
+            'question' => "Who will you most likely vote?",
+            'answers' => [
+                'Estrada',
+                'Lim',
+                'Atienza',
+                'Moreno',
+            ],
+        ],
+        [
+            'code' => 'Issue',
+            'question' => "What is the problem?",
+            'answers' => [
+                'Traffic',
+                'Jobs',
+                'Crime',
+            ],
+        ],
+        [
+            'code' => 'Color',
+            'question' => "What is you favorite color?",
+            'answers' => [
+                'Red',
+                'Orange',
+                'Yellow',
+                'Green',
+            ],
+        ],
+    ],
 ];
