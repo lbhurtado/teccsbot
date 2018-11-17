@@ -3,7 +3,6 @@
 namespace App\Channels;
 
 use App\Services\Telerivet;
-use App\Jobs\RegisterTelerivetService;
 use Illuminate\Notifications\Notification;
 
 class TelerivetChannel
@@ -29,8 +28,6 @@ class TelerivetChannel
                 }
             }
         }
-
-            // RegisterTelerivetService::dispatch($notifiable, $this->getAPI()->getProject());
 
         $message = $notification->toTelerivet($notifiable);
         if ($message->load)

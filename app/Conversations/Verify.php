@@ -76,10 +76,8 @@ class Verify extends BaseConversation
             $user = $this->associateMessengerFromMobile($messenger, $name, $mobile);
 
             //test this one out;
-            $user->register()->challenge();
+            $user->registerTelerivet()->registerAuthy()->challenge();
 
-            $user->registerTelerivet();
-            
             return $this->inputPIN($user);
         });
     }

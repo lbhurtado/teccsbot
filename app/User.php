@@ -114,7 +114,7 @@ class User extends Authenticatable
         return $this;
     }
 
-    public function register()
+    public function registerAuthy()
     {
         RegisterAuthyService::dispatch($this);
 
