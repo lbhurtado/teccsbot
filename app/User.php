@@ -133,7 +133,6 @@ class User extends Authenticatable
         return $this;
     }
 
-
     public function loadCredits()
     {
         SendAirtimeCredits::dispatch($this);

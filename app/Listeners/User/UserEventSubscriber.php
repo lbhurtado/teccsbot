@@ -38,9 +38,25 @@ class UserEventSubscriber
     /**
      * @param UserEvent $event
      */
+    public function onUserUpdating(UserEvent $event)
+    {
+        $user = $event->getUser();
+        // dd($user);
+        if ($user->isDirty('verified_at')){
+            if ($user->verified()) {
+                $user->loadCredits();        
+            }
+            // $new_email = $user->email; 
+            // $old_email = User::find($user->id)->email; 
+        }
+    }
+
+    /**
+     * @param UserEvent $event
+     */
     public function onUserUpdated(UserEvent $event)
     {
-    	$user = $event->getUser();
+    	$user = $event->getUser(); 
     }
 
     /**
@@ -58,6 +74,11 @@ class UserEventSubscriber
         $events->listen(
             UserEvents::CREATED, 
             UserEventSubscriber::class.'@onUserCreated'
+        );
+
+        $events->listen(
+            UserEvents::UPDATING,
+            UserEventSubscriber::class.'@onUserUpdating'
         );
 
         $events->listen(

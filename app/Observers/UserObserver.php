@@ -35,6 +35,17 @@ class UserObserver
     }
 
     /**
+     * Handle the user "updating" event.
+     *
+     * @param  \App\User  $user
+     * @return void
+     */
+    public function updating(User $user)
+    {
+        event(UserEvents::UPDATING, new UserEvent($user));
+    }
+
+    /**
      * Handle the user "updated" event.
      *
      * @param  \App\User  $user
@@ -42,7 +53,7 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        //
+        event(UserEvents::UPDATED, new UserEvent($user));
     }
 
     /**
