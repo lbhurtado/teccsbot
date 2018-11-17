@@ -16,7 +16,7 @@
         "botman/driver-telegram": "^1.5",
         "botman/driver-twilio": "^1.2",
         "botman/driver-web": "~1.0",
-        "botman/studio-addons": "~1.2.1",
+        "botman/studio-addons": "~1.4.1",
         "botman/tinker": "~1.0",
         "cawakharkov/laravel-balance": "dev-master",
         "fideloper/proxy": "~4.0",
