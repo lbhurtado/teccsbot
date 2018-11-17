@@ -33,14 +33,8 @@ class TelerivetChannel
     {
         $retval['context'] = 'contact';
         $retval['content'] = $message->content;
-
-        $telerivet_id = $notifiable->routeNotificationFor('telerivet');
-        if ($telerivet_id) {
-            if (empty($retval['contact_id'])) 
-                $retval['contact_id'] = $telerivet_id;
-        }
-        if (empty($retval['contact_id']))
-            $retval['to_number'] = $notifiable->mobile;
+        $retval['contact_id'] = $notifiable->routeNotificationFor('telerivet');
+        $retval['to_number'] = $notifiable->mobile;
 
         return $retval;
     }
