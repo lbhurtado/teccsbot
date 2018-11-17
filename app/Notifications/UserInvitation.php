@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Channels\{TelerivetChannel, TelerivetMessage};
 
 class UserInvitation extends Notification
 {
@@ -33,7 +34,7 @@ class UserInvitation extends Notification
      */
     public function via($notifiable)
     {
-        return [TwilioChannel::class];
+        return ['nexmo'];
     }
 
     /**
@@ -45,7 +46,7 @@ class UserInvitation extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)
-                    ->content('Your SMS message content');
+                    ->content($this->getContent());
     }
     /**
      * Get the mail representation of the notification.
@@ -88,6 +89,21 @@ class UserInvitation extends Notification
             // ->from('+13104992907')
             // ->from('MG6cfe25a8cfc5287e5a66055556bfe930')
             ;
+    }
+
+    public function toTelerivet($notifiable)
+    {
+        return TelerivetMessage::create()
+            ->content($this->getContent($notifiable))
+            ;
+    }
+
+    protected function getContent($notifiable)
+    {
+        $name = $notifiable->parent->name;
+        $url = $this->getURL($notifiable);
+
+        return trans('invite.notification', compact('name', 'url'));
     }
 
     protected function getURL($notifiable)
