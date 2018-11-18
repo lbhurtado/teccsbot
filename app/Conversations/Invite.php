@@ -35,13 +35,9 @@ class Invite extends BaseConversation
 
     public function run()
     {
-        // $this->introduction()->inputCode();
+        $this->introduction()->inputCode();
 
-        $this->quizQuestions = Question::all()->shuffle();
-        $this->questionCount = $this->quizQuestions->count();
-        $this->quizQuestions = $this->quizQuestions->keyBy('id');
-
-        $this->introduction()->survey();
+        // $this->introduction()->survey();
     }
 
     protected function introduction()
@@ -53,7 +49,7 @@ class Invite extends BaseConversation
 
     protected function inputCode()
     {
-        $question = Question::create(trans('invite.input.code'))
+        $question = BotManQuestion::create(trans('invite.input.code'))
         ->fallback(trans('invite.code.error'))
         ->callbackId('invite_code')
         ;
@@ -62,7 +58,7 @@ class Invite extends BaseConversation
             $question->addButton(Button::create(ucfirst($code))->value($code));
         }
 
-        return $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function (BotManAnswer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->code = $answer->getValue();
                 if (! $this->checkPermission()) {
@@ -79,12 +75,12 @@ class Invite extends BaseConversation
 
     protected function inputMobile()
     {
-        $question = Question::create(trans('invite.input.mobile', ['code' => $this->code]))
+        $question = BotManQuestion::create(trans('invite.input.mobile', ['code' => $this->code]))
         ->fallback(trans('invite.mobile.error'))
         ->callbackId('invite_mobile')
         ;
 
-        $this->ask($question, function (Answer $answer) {
+        $this->ask($question, function (BotManAnswer $answer) {
         	if (! $this->mobile = $this->checkMobile($answer->getText())) {
 
                 return $this->repeat(trans('invite.input.mobile'));
@@ -96,7 +92,7 @@ class Invite extends BaseConversation
 
     protected function verify()
     {
-        $question = Question::create(trans('invite.input.verify', [
+        $question = BotManQuestion::create(trans('invite.input.verify', [
         	'code' => $this->getCode(),
         	'mobile' => $this->getMobile()
         ]))
@@ -108,7 +104,7 @@ class Invite extends BaseConversation
             Button::create(trans('invite.input.no'))->value('No')
         ]);
 
-        $this->ask($question, function (Answer $answer) {
+        $this->ask($question, function (BotManAnswer $answer) {
             $driver = 'Facebook';
 
             if ($answer->isInteractiveMessageReply()) {
@@ -136,32 +132,18 @@ class Invite extends BaseConversation
     	}
         else
             $this->bot->reply(trans('invite.fail'));   
-    	
+
+        $this->survey();
     }
 
     protected function survey()
     {
+        $this->quizQuestions = Question::all()->shuffle();
+        $this->questionCount = $this->quizQuestions->count();
+        $this->quizQuestions = $this->quizQuestions->keyBy('id');
 
-        $this->say('You will be shown '.$this->questionCount.' questions about Laravel. Every correct answer will reward you with a certain amount of points. Please keep it fair and don\'t use any help. All the best! 🍀');
+        $this->say(trans('invite.survey.info', ['count' => $this->questionCount]));
         $this->checkForNextQuestion();
-
-        // $question = Question::create(config('chatbot.surveys')[0]['question'])
-        // ->fallback(trans('invite.survey.error'))
-        // ->callbackId('invite_survey')
-        // ;
-
-        // $choices = config('chatbot.surveys')[0]['choices'];
-        // foreach ($choices as $choice) {
-        //     $question->addButton(Button::create(ucfirst($choice))->value(strtoupper($choice)));
-        // }
-
-        // return $this->ask($question, function (Answer $answer) {
-        //     if ($answer->isInteractiveMessageReply()) {
-        //         $this->bot->reply($answer->getValue());
-        //     }
-        //     else 
-        //         return $this->repeat();
-        // });
     }
 
     private function checkForNextQuestion()
@@ -179,30 +161,25 @@ class Invite extends BaseConversation
             $quizAnswer = Answer::find($answer->getValue());
 
             if (! $quizAnswer) {
-                $this->say('Sorry, I did not get that. Please use the buttons.');
+                $this->say(trans('invite.survey.fallback'));
                 return $this->checkForNextQuestion();
             }
 
             $this->quizQuestions->forget($question->id);
-
-            if ($quizAnswer->correct_one) {
-                $this->userPoints += $question->points;
-                $this->userCorrectAnswers++;
-                $answerResult = '✅';
-            } else {
-                $correctAnswer = $question->answers()->where('correct_one', true)->first()->text;
-                $answerResult = "❌ (Correct: {$correctAnswer})";
-            }
             $this->currentQuestion++;
 
-            $this->say("Your answer: {$quizAnswer->text} {$answerResult}");
+            $this->say("Your answer: {$quizAnswer->text}");
             $this->checkForNextQuestion();
         });
     }
 
     private function createQuestionTemplate(Question $question)
     {
-        $questionTemplate = BotManQuestion::create("➡️ Question: {$this->currentQuestion} / {$this->questionCount} : {$question->text}");
+        $questionTemplate = BotManQuestion::create(trans('invite.survey.question', [
+            'current' => $this->currentQuestion,
+            'count' => $this->questionCount,
+            'text' => $question->text
+        ]));
 
         foreach ($question->answers->shuffle() as $answer) {
             $questionTemplate->addButton(Button::create($answer->text)->value($answer->id));
@@ -213,9 +190,7 @@ class Invite extends BaseConversation
 
     private function showResult()
     {
-        $this->say('Finished 🏁');
-        $this->say("You made it through all the questions. You reached {$this->userPoints} points! Correct answers: {$this->userCorrectAnswers} / {$this->questionCount}");
-
+        $this->say(trans('invite.survey.finished'));
     }
 
     protected function checkPermission()

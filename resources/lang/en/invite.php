@@ -15,4 +15,10 @@ return [
 	'processing' => "Please stand by - processing...",
 	'sent' => "Invitation has been sent.",
 	'fail' => "Something is wrong. Please notify the system administrator.",
+	'survey' => [
+		'info' => "You will be shown :count questions about Laravel. Every correct answer will reward you with a certain amount of points. Please keep it fair and don't use any help. All the best! 🍀",
+		'fallback' => "Sorry, I did not get that. Please use the buttons.",
+		'question' => "➡️ Question: :current/:count : :text",
+		'finished' => "Finished 🏁",
+	],
 ];
