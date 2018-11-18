@@ -4,7 +4,7 @@ use BotMan\BotMan\BotMan;
 
 use App\Controllers\UserController;
 use BotMan\BotMan\Middleware\ApiAi;
-use App\Conversations\{SignUp, Verify, Onboarding, Invite, Status, Tasking, Checkin};
+use App\Conversations\{SignUp, Verify, Onboarding, Invite, Status, Tasking, Checkin, Survey};
 use BotMan\BotMan\Middleware\Dialogflow;
 use App\Http\Controllers\BotManController;
 use App\Http\Middleware\ManagesUsersMiddleware;
@@ -58,6 +58,10 @@ $botman->hears('/checkin', function (BotMan $bot) {
 
 $botman->hears('/signup|SIGN_UP', function (BotMan $bot) {
     $bot->startConversation(new SignUp());
+})->stopsConversation();
+
+$botman->hears('/survey', function (BotMan $bot) {
+    $bot->startConversation(new Survey());
 })->stopsConversation();
 
 $botman->hears('/register {attributes}', UserController::class.'@register');
