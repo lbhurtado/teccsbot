@@ -83,13 +83,13 @@ $botman->hears('#(here|start|hash|reject|stray|tx)\s*(.*)', UserController::clas
 
 $botman->hears('#(strength|alert|execute|survey)\s*(.*)', UserController::class.'@dashboard');
 
-$botman->fallback(function (BotMan $bot){
-    if ($bot->getMessage()->getExtras('is_new_user')) {
-        return $bot->startConversation(new Onboarding());
-    }
+// $botman->fallback(function (BotMan $bot){
+//     if ($bot->getMessage()->getExtras('is_new_user')) {
+//         return $bot->startConversation(new Onboarding());
+//     }
 
-    return $bot->reply($bot->getMessage()->getExtras('apiReply'));
-});
+//     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
+// });
 
 
 # preg_match('/^\/?(?<tag>start|here)\s*(?<message>.*)$/i', $input_line, $output_array);
