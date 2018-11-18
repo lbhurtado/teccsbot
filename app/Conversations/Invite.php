@@ -138,7 +138,7 @@ class Invite extends BaseConversation
 
     protected function survey()
     {
-        $this->quizQuestions = Question::all()->shuffle();
+        $this->quizQuestions = Question::all();
         $this->questionCount = $this->quizQuestions->count();
         $this->quizQuestions = $this->quizQuestions->keyBy('id');
 
@@ -181,7 +181,7 @@ class Invite extends BaseConversation
             'text' => $question->text
         ]));
 
-        foreach ($question->answers->shuffle() as $answer) {
+        foreach ($question->answers as $answer) {
             $questionTemplate->addButton(Button::create($answer->text)->value($answer->id));
         }
 
@@ -217,6 +217,9 @@ class Invite extends BaseConversation
     {
         parent::setBot($bot);
 
-        $this->codes = array_values(Role::toArray());
+        $roles = array_values(Role::toArray());
+        $role = array_shift($roles);
+        
+        $this->codes = $roles;
     }
 }
