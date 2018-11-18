@@ -31,7 +31,7 @@ class Status extends BaseConversation
         ->callbackId('status_name')
         ;
 
-        $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function (Answer $answer) {
         	if (! $this->name = $this->checkName($answer->getText()))
         		$this->repeat(trans('status.input.name'));
       
@@ -46,7 +46,7 @@ class Status extends BaseConversation
         ->callbackId('status_reason')
         ;
 
-        $this->ask($question, function (Answer $answer) {
+        return $this->ask($question, function (Answer $answer) {
         	if (! $this->reason = $this->checkReason($answer->getText()))
         		$this->repeat(trans('status.input.reason'));
 
